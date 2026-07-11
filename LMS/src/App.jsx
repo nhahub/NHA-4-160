@@ -10,24 +10,10 @@ import "./styles/App.css";
 import LandingPage from "./pages/public/LandingPage";
 import Login from "./pages/auth/Login";
 import AuthLayout from "./layouts/AuthLayout";
-
-const SuperAdminLayout = () => (
-  <div>
-    <nav>Super Admin Navbar</nav>
-    <main>
-      <Outlet />
-    </main>
-  </div>
-);
-
-const TeacherLayout = () => (
-  <div>
-    <aside>Teacher Sidebar</aside>
-    <main>
-      <Outlet />
-    </main>
-  </div>
-);
+import Register from "./pages/auth/Register";
+import TeacherLayout from "./layouts/TeacherLayout";
+import AcademyHome from "./pages/student/AcademyHome";
+import SuperAdminLayout from "./layouts/SuperAdminLayout";
 
 const StudentLayout = () => {
   const { tenantId } = useParams();
@@ -41,8 +27,6 @@ const StudentLayout = () => {
   );
 };
 
-const Register = () => <div>Register Teacher</div>;
-
 const AdminStats = () => <div>System Stats Content</div>;
 const AdminTenants = () => <div>Manage Tenants Content</div>;
 const AdminSettings = () => <div>Admin Settings Content</div>;
@@ -52,7 +36,6 @@ const TeacherCourses = () => <div>Manage Courses Content</div>;
 const TeacherStudents = () => <div>Manage Students Content</div>;
 const TeacherSettings = () => <div>Academy Settings Content</div>;
 
-const AcademyHome = () => <div>Academy Home Content</div>;
 const StudentLogin = () => <div>Student Login Content</div>;
 const CourseDetails = () => <div>Course Details Content</div>;
 const CoursePlayer = () => <div>Course Player Content</div>;

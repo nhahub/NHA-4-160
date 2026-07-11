@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useLogin } from "../../hooks/useLogin";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const { login, isLoading } = useLogin();
 
   const {
     register,
@@ -13,7 +15,7 @@ const Login = () => {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data);
+    login({ email: data.email, password: data.password });
   };
 
   const inputStyle = {
@@ -128,7 +130,7 @@ const Login = () => {
           onMouseOver={(e) => (e.target.style.opacity = "0.9")}
           onMouseOut={(e) => (e.target.style.opacity = "1")}
         >
-          Sign In
+          Log In
         </button>
       </form>
 
@@ -141,7 +143,7 @@ const Login = () => {
           className="text-decoration-none fw-bold ms-1"
           style={{ color: "var(--color-brand-600)", fontSize: "0.95rem" }}
         >
-          Start for Free
+          Start
         </Link>
       </div>
     </div>
