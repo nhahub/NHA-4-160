@@ -14,6 +14,11 @@ import Register from "./pages/auth/Register";
 import TeacherLayout from "./layouts/TeacherLayout";
 import AcademyHome from "./pages/student/AcademyHome";
 import SuperAdminLayout from "./layouts/SuperAdminLayout";
+import TeacherDashboardPage from "./pages/teacher/Dashboard";
+import TeacherCoursesPage from "./pages/teacher/Courses";
+import TeacherCourseBuilderPage from "./pages/teacher/CourseBuilder";
+import TeacherStudentsPage from "./pages/teacher/Students";
+import TeacherSettingsPage from "./pages/teacher/Settings";
 
 const StudentLayout = () => {
   const { tenantId } = useParams();
@@ -31,10 +36,6 @@ const AdminStats = () => <div>System Stats Content</div>;
 const AdminTenants = () => <div>Manage Tenants Content</div>;
 const AdminSettings = () => <div>Admin Settings Content</div>;
 
-const TeacherDashboard = () => <div>Teacher Dashboard Content</div>;
-const TeacherCourses = () => <div>Manage Courses Content</div>;
-const TeacherStudents = () => <div>Manage Students Content</div>;
-const TeacherSettings = () => <div>Academy Settings Content</div>;
 
 const StudentLogin = () => <div>Student Login Content</div>;
 const CourseDetails = () => <div>Course Details Content</div>;
@@ -60,10 +61,11 @@ function App() {
           </Route>
 
           <Route path="/dashboard" element={<TeacherLayout />}>
-            <Route index element={<TeacherDashboard />} />
-            <Route path="courses" element={<TeacherCourses />} />
-            <Route path="students" element={<TeacherStudents />} />
-            <Route path="settings" element={<TeacherSettings />} />
+            <Route index element={<TeacherDashboardPage />} />
+            <Route path="courses" element={<TeacherCoursesPage />} />
+            <Route path="courses/:courseId" element={<TeacherCourseBuilderPage />} />
+            <Route path="students" element={<TeacherStudentsPage />} />
+            <Route path="settings" element={<TeacherSettingsPage />} />
           </Route>
 
           <Route path="/:tenantId" element={<StudentLayout />}>
