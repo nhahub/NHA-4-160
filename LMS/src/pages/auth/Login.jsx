@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useLogin } from "../../hooks/useLogin";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { login, isLoading } = useLogin();
+
+  const [searchParams] = useSearchParams();
+  const academy = searchParams.get("academy");
 
   const {
     register,
@@ -33,11 +36,19 @@ const Login = () => {
       }}
     >
       <div className="mb-4 text-center text-lg-start">
-        <h2 className="fw-bold mb-2" style={{ color: "var(--color-grey-900)" }}>
-          Welcome back
+        <h2
+          className="fw-bold mb-2 text-capitalize"
+          style={{ color: "var(--color-grey-900)" }}
+        >
+          {academy
+            ? `Welcome to ${academy.replace(/-/g, " ")}`
+            : "Welcome back"}
         </h2>
+
         <p style={{ color: "var(--color-grey-500)" }}>
-          Please enter your details to sign in.
+          {academy
+            ? "Please enter your student details to sign in."
+            : "Please enter your details to sign in."}
         </p>
       </div>
 
@@ -119,6 +130,7 @@ const Login = () => {
 
         <button
           type="submit"
+          disabled={isLoading}
           className="btn btn-lg w-100 fw-bold shadow-sm mt-2"
           style={{
             backgroundColor: "var(--color-brand-600)",
@@ -126,26 +138,30 @@ const Login = () => {
             padding: "12px",
             border: "none",
             transition: "opacity 0.3s ease",
+            opacity: isLoading ? "0.7" : "1",
+            cursor: isLoading ? "not-allowed" : "pointer",
           }}
-          onMouseOver={(e) => (e.target.style.opacity = "0.9")}
-          onMouseOut={(e) => (e.target.style.opacity = "1")}
+          onMouseOver={(e) => !isLoading && (e.target.style.opacity = "0.9")}
+          onMouseOut={(e) => !isLoading && (e.target.style.opacity = "1")}
         >
-          Log In
+          {isLoading ? "Signing in..." : "Log In"}
         </button>
       </form>
 
-      <div className="mt-4 text-center">
-        <span style={{ color: "var(--color-grey-500)", fontSize: "0.95rem" }}>
-          Don't have an academy?{" "}
-        </span>
-        <Link
-          to="/register"
-          className="text-decoration-none fw-bold ms-1"
-          style={{ color: "var(--color-brand-600)", fontSize: "0.95rem" }}
-        >
-          Start
-        </Link>
-      </div>
+      {!academy && (
+        <div className="mt-4 text-center">
+          <span style={{ color: "var(--color-grey-500)", fontSize: "0.95rem" }}>
+            Don't have an academy?{" "}
+          </span>
+          <Link
+            to="/register"
+            className="text-decoration-none fw-bold ms-1"
+            style={{ color: "var(--color-brand-600)", fontSize: "0.95rem" }}
+          >
+            Start
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

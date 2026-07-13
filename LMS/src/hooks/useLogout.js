@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../services/authService";
 import toast from "react-hot-toast";
 
-export const useLogout = () => {
+export const useLogout = (redirectPath = "/") => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -12,7 +12,7 @@ export const useLogout = () => {
     onSuccess: () => {
       queryClient.removeQueries();
 
-      navigate("/", { replace: true });
+      navigate(redirectPath, { replace: true });
 
       toast.success("Logged out successfully");
     },

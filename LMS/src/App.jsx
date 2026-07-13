@@ -1,11 +1,5 @@
 import { Toaster } from "react-hot-toast";
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  Outlet,
-  useParams,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./styles/App.css";
 import LandingPage from "./pages/public/LandingPage";
 import Login from "./pages/auth/Login";
@@ -19,27 +13,15 @@ import TeacherCoursesPage from "./pages/teacher/Courses";
 import TeacherCourseBuilderPage from "./pages/teacher/CourseBuilder";
 import TeacherStudentsPage from "./pages/teacher/Students";
 import TeacherSettingsPage from "./pages/teacher/Settings";
-
-const StudentLayout = () => {
-  const { tenantId } = useParams();
-  return (
-    <div>
-      <nav>{tenantId} Navbar</nav>
-      <main>
-        <Outlet />
-      </main>
-    </div>
-  );
-};
+import StudentLayout from "./layouts/StudentLayout";
+import CourseDetails from "./pages/student/CourseDetails";
+import StudentProfile from "./pages/student/StudentProfile";
+import CoursePlayer from "./pages/student/CoursePlayer";
+import BuyCourses from "./pages/student/BuyCourses";
 
 const AdminStats = () => <div>System Stats Content</div>;
 const AdminTenants = () => <div>Manage Tenants Content</div>;
 const AdminSettings = () => <div>Admin Settings Content</div>;
-
-
-const StudentLogin = () => <div>Student Login Content</div>;
-const CourseDetails = () => <div>Course Details Content</div>;
-const CoursePlayer = () => <div>Course Player Content</div>;
 
 const NotFound = () => <div>404 Not Found</div>;
 
@@ -63,15 +45,19 @@ function App() {
           <Route path="/dashboard" element={<TeacherLayout />}>
             <Route index element={<TeacherDashboardPage />} />
             <Route path="courses" element={<TeacherCoursesPage />} />
-            <Route path="courses/:courseId" element={<TeacherCourseBuilderPage />} />
+            <Route
+              path="courses/:courseId"
+              element={<TeacherCourseBuilderPage />}
+            />
             <Route path="students" element={<TeacherStudentsPage />} />
             <Route path="settings" element={<TeacherSettingsPage />} />
           </Route>
 
           <Route path="/:tenantId" element={<StudentLayout />}>
             <Route index element={<AcademyHome />} />
-            <Route path="login" element={<StudentLogin />} />
             <Route path="course/:courseId" element={<CourseDetails />} />
+            <Route path="buy" element={<BuyCourses />} />
+            <Route path="profile" element={<StudentProfile />} />
             <Route path="learn/:courseId" element={<CoursePlayer />} />
           </Route>
 
