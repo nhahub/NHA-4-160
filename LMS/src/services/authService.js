@@ -15,6 +15,7 @@ export const loginUser = async (email, password) => {
     .single();
 
   if (userError) throw userError;
+
   return userData;
 };
 
@@ -22,19 +23,34 @@ export const getCurrentUser = async () => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
   if (!user) throw new Error("No user found");
 
   const { data, error } = await supabase
     .from("users")
-    .select("*, tenants(academy_name)")
+    .select(
+      `
+      *,
+      tenants (
+        academy_name
+      )
+      `
+    )
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
+
+  if (!data) {
+    throw new Error("User profile not found in users table");
+  }
+
   return data;
 };
+
 export const logoutUser = async () => {
   const { error } = await supabase.auth.signOut();
+
   if (error) throw error;
 };
 
@@ -45,14 +61,13 @@ export const registerTeacher = async (formData) => {
     email,
     password,
     options: {
-      data: { name: name },
+      data: { name },
     },
   });
 
   if (authError) throw authError;
 
   const userId = authData.user.id;
-
   const tenantId = academyName.toLowerCase().replace(/\s+/g, "-");
 
   const { error: tenantError } = await supabase.from("tenants").insert([
@@ -64,16 +79,14 @@ export const registerTeacher = async (formData) => {
     },
   ]);
 
-  if (tenantError) {
-    throw tenantError;
-  }
+  if (tenantError) throw tenantError;
 
   const { error: userError } = await supabase.from("users").insert([
     {
       id: userId,
-      name: name,
-      email: email,
-      phone: phone,
+      name,
+      email,
+      phone,
       role: "admin",
       tenant_id: tenantId,
     },

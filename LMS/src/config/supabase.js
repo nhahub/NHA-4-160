@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+﻿import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -8,3 +8,11 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
+
+export const secondarySupabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    storageKey: "sb-secondary-auth-token",
+    persistSession: false,
+    autoRefreshToken: false,
+  },
+});
