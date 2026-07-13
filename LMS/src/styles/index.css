@@ -1,105 +1,532 @@
+/* src/styles/custom.css
+   TeachBase design tokens + component styles, built on top of Bootstrap 5.3.
+   Import this AFTER bootstrap/dist/css/bootstrap.min.css so these overrides win.
+   No Tailwind anywhere in this project.
+*/
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+/* ---------------------------------------------------------------------- */
+/* 1. Design tokens — override Bootstrap's CSS variables + add our own    */
+/* ---------------------------------------------------------------------- */
+:root {
+  /* Brand (purple) mapped onto Bootstrap's primary */
+  --bs-primary: #7c3aed;
+  --bs-primary-rgb: 124, 58, 237;
+  --bs-primary-text-emphasis: #5b21b6;
+  --bs-primary-bg-subtle: #f5f3ff;
+  --bs-primary-border-subtle: #ddd6fe;
+  --bs-link-color: #7c3aed;
+  --bs-link-hover-color: #6d28d9;
+  --bs-link-color-rgb: 124, 58, 237;
+  --bs-body-font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --bs-body-color: #1a1533;
+  --bs-body-bg: #ffffff;
+
+  /* Extra TeachBase tokens not covered by Bootstrap defaults */
+  --tb-primary-50: #f5f3ff;
+  --tb-primary-100: #ede9fe;
+  --tb-primary-400: #a78bfa;
+  --tb-primary-600: #7c3aed;
+  --tb-primary-700: #6d28d9;
+  --tb-surface-soft: #f8f7fd;
+  --tb-surface-muted: #f4f2fb;
+  --tb-border: #ecebf5;
+  --tb-text-primary: #1a1533;
+  --tb-text-secondary: #6b6884;
+  --tb-text-muted: #9997ab;
+  --tb-success-bg: #e9f9ee;
+  --tb-success-text: #1f9d55;
+  --tb-warning-bg: #fff6e5;
+  --tb-warning-text: #c8850c;
+  --tb-danger-bg: #fdecec;
+  --tb-danger-text: #d92d20;
+  --tb-shadow-card: 0 1px 2px rgba(16, 13, 40, 0.04), 0 4px 16px rgba(16, 13, 40, 0.04);
+  --tb-shadow-popover: 0 8px 30px rgba(76, 29, 149, 0.12);
+
+  /* //ai */
+  /* Legacy variables used by existing pages */
+
+--color-grey-0: #ffffff;
+--color-grey-50: #f9fafb;
+--color-grey-100: #f3f4f6;
+--color-grey-200: #e5e7eb;
+--color-grey-300: #d1d5db;
+--color-grey-400: #9ca3af;
+--color-grey-500: #6b7280;
+--color-grey-600: #4b5563;
+--color-grey-700: #374151;
+--color-grey-800: #1f2937;
+--color-grey-900: #111827;
+
+--color-brand-500: #6366f1;
+--color-brand-600: #4f46e5;
+--color-brand-700: #4338ca;
+
+--color-blue-solid: #2563eb;
+--color-blue-text: #ffffff;
+
+--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+--shadow-md: 0 0.6rem 2.4rem rgba(0, 0, 0, 0.06);
+}
+
 body {
-  font-family: "Inter", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color: var(--tb-text-primary);
+  scroll-behavior: smooth;
 }
 
-@layer base {
-  :root,
-  .light {
-    --color-grey-0: #fff;
-    --color-grey-50: #f9fafb;
-    --color-grey-100: #f3f4f6;
-    --color-grey-200: #e5e7eb;
-    --color-grey-300: #d1d5db;
-    --color-grey-400: #9ca3af;
-    --color-grey-500: #6b7280;
-    --color-grey-600: #4b5563;
-    --color-grey-700: #374151;
-    --color-grey-800: #1f2937;
-    --color-grey-900: #111827;
-
-    --color-brand-500: #6366f1;
-    --color-brand-600: #4f46e5;
-    --color-brand-700: #4338ca;
-    --color-blue-solid: #2563eb;
-    --color-blue-text: #ffffff;
-
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-    --shadow-md: 0px 0.6rem 2.4rem rgba(0, 0, 0, 0.06);
-
-    --image-grayscale: 0;
-    --image-opacity: 100%;
-  }
-
-  .dark {
-    --color-grey-0: #1e1e1e;
-    --color-grey-50: #121212;
-    --color-grey-100: #2a2a2a;
-    --color-grey-200: #404040;
-    --color-grey-300: #525252;
-    --color-grey-400: #737373;
-    --color-grey-500: #a3a3a3;
-    --color-grey-600: #d4d4d4;
-    --color-grey-700: #e5e5e5;
-    --color-grey-800: #f5f5f5;
-    --color-grey-900: #fafafa;
-
-    --color-blue-solid: #3b82f6;
-    --color-blue-text: #ffffff;
-
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0px 0.6rem 2.4rem rgba(0, 0, 0, 0.5);
-
-    --image-grayscale: 10%;
-    --image-opacity: 90%;
-  }
-
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-  }
-  html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 80px;
-  }
-  body {
-    font-family: "Poppins", sans-serif;
-    color: var(--color-grey-700);
-    background-color: var(--color-grey-50);
-    min-height: 100vh;
-    line-height: 1.5;
-  }
-
-  img {
-    max-width: 100%;
-    filter: grayscale(var(--image-grayscale)) opacity(var(--image-opacity));
-  }
-}
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+a {
+  text-decoration: none;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
+/* ---------------------------------------------------------------------- */
+/* 2. Generic helpers                                                     */
+/* ---------------------------------------------------------------------- */
+.tb-text-secondary { color: var(--tb-text-secondary) !important; }
+.tb-text-muted { color: var(--tb-text-muted) !important; }
+.tb-bg-soft { background-color: var(--tb-surface-soft) !important; }
+.tb-bg-muted { background-color: var(--tb-surface-muted) !important; }
+.tb-border { border-color: var(--tb-border) !important; }
+
+.tb-shadow-card { box-shadow: var(--tb-shadow-card); }
+.tb-shadow-popover { box-shadow: var(--tb-shadow-popover); }
+
+.tb-rounded-lg { border-radius: 0.75rem !important; }
+.tb-rounded-xl { border-radius: 1rem !important; }
+.tb-rounded-2xl { border-radius: 1.25rem !important; }
+
+.tb-hover-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.tb-hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+.tb-gradient-text {
+  background: linear-gradient(90deg, var(--tb-primary-600), var(--tb-primary-400));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.tb-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--tb-primary-100);
+  color: var(--tb-primary-700);
+  font-weight: 600;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.tb-icon-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.6rem;
+  background-color: var(--tb-primary-50);
+  color: var(--tb-primary-700);
+}
+
+/* Focus visibility */
+.btn:focus-visible,
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--tb-primary-600);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* 3. Navbar (pricing page)                                               */
+/* ---------------------------------------------------------------------- */
+.tb-navbar {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--tb-border);
+}
+
+.tb-navbar .nav-link {
+  color: var(--tb-text-secondary);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+.tb-navbar .nav-link:hover {
+  color: var(--tb-primary-700);
+}
+
+.tb-logo-badge {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background-color: var(--tb-primary-600);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------------------------------------------------------------------- */
+/* 4. Pricing toggle                                                      */
+/* ---------------------------------------------------------------------- */
+.tb-toggle-group {
+  border: 1px solid var(--tb-border);
+  background-color: var(--tb-surface-soft);
+  border-radius: 999px;
+  padding: 0.25rem;
+  display: inline-flex;
+  gap: 0.25rem;
+}
+
+.tb-toggle-btn {
+  border: none;
   background: transparent;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--tb-text-secondary);
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--color-grey-300);
-  border-radius: 10px;
+.tb-toggle-btn.active {
+  background-color: #fff;
+  color: var(--tb-text-primary);
+  box-shadow: var(--tb-shadow-card);
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--color-grey-400);
+.tb-save-badge {
+  background-color: var(--tb-primary-100);
+  color: var(--tb-primary-700);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  margin-left: 0.4rem;
 }
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
+
+/* ---------------------------------------------------------------------- */
+/* 5. Pricing cards                                                       */
+/* ---------------------------------------------------------------------- */
+.tb-pricing-card {
+  border: 1px solid var(--tb-border);
+  border-radius: 1rem;
+  background-color: #fff;
+  padding: 1.5rem;
+  box-shadow: var(--tb-shadow-card);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  height: 100%;
 }
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.tb-pricing-card:hover {
+  transform: translateY(-4px);
+}
+
+.tb-pricing-card--featured {
+  border: 2px solid var(--tb-primary-600);
+  box-shadow: var(--tb-shadow-popover);
+}
+
+@media (min-width: 768px) {
+  .tb-pricing-card--featured {
+    transform: scale(1.05);
+  }
+  .tb-pricing-card--featured:hover {
+    transform: scale(1.05) translateY(-4px);
+  }
+}
+
+.tb-pricing-badge {
+  position: absolute;
+  top: -0.9rem;
+  right: 1.5rem;
+  background-color: var(--tb-primary-600);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  box-shadow: var(--tb-shadow-card);
+}
+
+.tb-price-tagline {
+  min-height: 2.5rem;
+}
+
+.tb-feature-check {
+  color: var(--tb-primary-600);
+  margin-top: 0.15rem;
+}
+
+/* ---------------------------------------------------------------------- */
+/* 6. Compare features table                                              */
+/* ---------------------------------------------------------------------- */
+.tb-compare-table thead th {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--tb-text-muted);
+  background-color: var(--tb-surface-soft);
+}
+
+.tb-compare-table tbody tr.tb-group-row td {
+  background-color: var(--tb-surface-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--tb-text-primary);
+}
+
+.tb-compare-table td,
+.tb-compare-table th {
+  vertical-align: middle;
+}
+
+/* ---------------------------------------------------------------------- */
+/* 7. FAQ accordion (pure CSS grid-based expand, no JS dependency)        */
+/* ---------------------------------------------------------------------- */
+.tb-faq-item {
+  border-bottom: 1px solid var(--tb-border);
+  padding: 1rem 0;
+}
+
+.tb-faq-trigger {
+  background: none;
+  border: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  font-weight: 500;
+  color: var(--tb-text-primary);
+}
+
+.tb-faq-trigger .bi {
+  transition: transform 0.25s ease, color 0.25s ease;
+  color: var(--tb-text-muted);
+}
+
+.tb-faq-trigger[aria-expanded="true"] .bi {
+  transform: rotate(180deg);
+  color: var(--tb-primary-600);
+}
+
+.tb-faq-answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+.tb-faq-answer.show {
+  grid-template-rows: 1fr;
+}
+.tb-faq-answer > div {
+  overflow: hidden;
+}
+.tb-faq-answer p {
+  padding-top: 0.75rem;
+  margin-bottom: 0;
+  color: var(--tb-text-secondary);
+  font-size: 0.9rem;
+}
+
+.tb-faq-media {
+  background-color: var(--tb-surface-muted);
+  border-radius: 1rem;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tb-text-muted);
+}
+
+/* ---------------------------------------------------------------------- */
+/* 8. Dashboard layout / sidebar                                          */
+/* ---------------------------------------------------------------------- */
+.tb-dashboard-shell {
+  background-color: var(--tb-surface-muted);
+  min-height: 100vh;
+}
+
+.tb-sidebar {
+  width: 16rem;
+  background-color: #fff;
+  border-right: 1px solid var(--tb-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.tb-sidebar-nav .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--tb-text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 0.6rem;
+  padding: 0.6rem 0.75rem;
+}
+.tb-sidebar-nav .nav-link:hover {
+  background-color: var(--tb-surface-soft);
+  color: var(--tb-text-primary);
+}
+.tb-sidebar-nav .nav-link.active {
+  background-color: var(--tb-primary-50);
+  color: var(--tb-primary-700);
+}
+
+@media (max-width: 991.98px) {
+  .tb-sidebar {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 1040;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  .tb-sidebar.show {
+    transform: translateX(0);
+  }
+  .tb-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1035;
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* 9. Dashboard navbar                                                    */
+/* ---------------------------------------------------------------------- */
+.tb-dashboard-navbar {
+  background-color: #fff;
+  border-bottom: 1px solid var(--tb-border);
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+.tb-search-input {
+  background-color: var(--tb-surface-soft);
+  border: 1px solid var(--tb-border);
+  border-radius: 0.6rem;
+  font-size: 0.875rem;
+}
+.tb-search-input:focus {
+  border-color: var(--tb-primary-400);
+  box-shadow: none;
+}
+
+.tb-notif-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: var(--tb-danger-text);
+  position: absolute;
+  top: -1px;
+  right: -1px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* 10. Stat cards / dashboard cards                                       */
+/* ---------------------------------------------------------------------- */
+.tb-card {
+  background-color: #fff;
+  border: 1px solid var(--tb-border);
+  border-radius: 1.25rem;
+  box-shadow: var(--tb-shadow-card);
+  padding: 1.25rem;
+}
+
+.tb-stat-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.6rem;
+  background-color: var(--tb-primary-50);
+  color: var(--tb-primary-700);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tb-trend-up { color: var(--tb-success-text); }
+.tb-trend-down { color: var(--tb-danger-text); }
+
+/* ---------------------------------------------------------------------- */
+/* 11. Quick actions                                                      */
+/* ---------------------------------------------------------------------- */
+.tb-quick-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  border: 1px solid var(--tb-border);
+  border-radius: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  background-color: #fff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--tb-text-primary);
+  text-align: left;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.tb-quick-action-btn:hover {
+  border-color: var(--tb-primary-300, #c4b5fd);
+  background-color: var(--tb-primary-50);
+}
+
+/* ---------------------------------------------------------------------- */
+/* 12. Enrollment table                                                   */
+/* ---------------------------------------------------------------------- */
+.tb-table thead th {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--tb-text-muted);
+  font-weight: 500;
+  border-bottom-width: 1px;
+}
+
+.tb-table td {
+  vertical-align: middle;
+  font-size: 0.875rem;
+}
+
+.tb-badge-confirmed {
+  background-color: var(--tb-success-bg);
+  color: var(--tb-success-text);
+}
+.tb-badge-pending {
+  background-color: var(--tb-warning-bg);
+  color: var(--tb-warning-text);
+}
+.tb-badge-cancelled {
+  background-color: var(--tb-danger-bg);
+  color: var(--tb-danger-text);
+}
+
+.tb-page-btn {
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.6rem;
+  border: none;
+  background: transparent;
+  color: var(--tb-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.tb-page-btn:hover:not(:disabled) {
+  background-color: var(--tb-surface-soft);
+}
+.tb-page-btn.active {
+  background-color: var(--tb-primary-600);
+  color: #fff;
+}
+.tb-page-btn:disabled {
+  opacity: 0.4;
 }
