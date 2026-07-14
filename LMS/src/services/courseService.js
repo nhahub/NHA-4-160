@@ -3,7 +3,7 @@ import { supabase } from "../config/supabase";
 export const getPublishedCourses = async (tenantId) => {
   const { data, error } = await supabase
     .from("courses")
-    .select("*")
+    .select("id, title, description, price, thumbnail_url, category, status")
     .eq("tenant_id", tenantId)
     .eq("status", "published");
 

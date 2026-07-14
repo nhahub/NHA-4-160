@@ -4,8 +4,8 @@ import {
   Link,
   NavLink,
   useNavigate,
-} from "react-router-dom"; // 👈 ضفنا NavLink هنا
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+} from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "../hooks/useTheme";
 import { FaMoon, FaSun, FaUserCircle, FaSignOutAlt } from "react-icons/fa";
 import { getAcademyDetails } from "../services/tenantService";

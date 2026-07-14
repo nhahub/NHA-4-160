@@ -20,6 +20,8 @@ import { useAddLesson } from "../../hooks/useAddLesson";
 import { useUpdateLesson } from "../../hooks/useUpdateLesson";
 import { useDeleteLesson } from "../../hooks/useDeleteLesson";
 import { useReorderLessons } from "../../hooks/useReorderLessons";
+import { uploadVideoToCloudinary } from "../../services/cloudinaryService";
+import toast from "react-hot-toast";
 import Modal from "../../components/Modal";
 
 const inputStyle = {
@@ -41,7 +43,10 @@ const ReorderButtons = ({ onUp, onDown, disableUp, disableDown }) => (
       onClick={onUp}
       disabled={disableUp}
       className="btn btn-sm p-0"
-      style={{ color: disableUp ? "var(--color-grey-300)" : "var(--color-grey-600)", lineHeight: 1 }}
+      style={{
+        color: disableUp ? "var(--color-grey-300)" : "var(--color-grey-600)",
+        lineHeight: 1,
+      }}
       title="Move up"
     >
       <FaChevronUp size={12} />
@@ -50,7 +55,10 @@ const ReorderButtons = ({ onUp, onDown, disableUp, disableDown }) => (
       onClick={onDown}
       disabled={disableDown}
       className="btn btn-sm p-0"
-      style={{ color: disableDown ? "var(--color-grey-300)" : "var(--color-grey-600)", lineHeight: 1 }}
+      style={{
+        color: disableDown ? "var(--color-grey-300)" : "var(--color-grey-600)",
+        lineHeight: 1,
+      }}
       title="Move down"
     >
       <FaChevronDown size={12} />
@@ -59,16 +67,28 @@ const ReorderButtons = ({ onUp, onDown, disableUp, disableDown }) => (
 );
 
 /** Modal used both to add a brand-new lesson and to edit an existing one. */
-const LessonFormModal = ({ isOpen, onClose, courseId, sectionId, lesson, nextOrder }) => {
+const LessonFormModal = ({
+  isOpen,
+  onClose,
+  courseId,
+  sectionId,
+  lesson,
+  nextOrder,
+}) => {
   const isEditing = !!lesson;
   const { createLesson, isLoading: isCreating } = useAddLesson(courseId);
   const { editLesson, isLoading: isEditingLoading } = useUpdateLesson(courseId);
   const isLoading = isCreating || isEditingLoading;
 
+  const [isUploadingVideo, setIsUploadingVideo] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm({
     values: {
@@ -77,11 +97,37 @@ const LessonFormModal = ({ isOpen, onClose, courseId, sectionId, lesson, nextOrd
     },
   });
 
+  const currentVideoUrl = watch("videoUrl");
+
+  const handleVideoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      setIsUploadingVideo(true);
+      const url = await uploadVideoToCloudinary(file, setUploadProgress);
+      setValue("videoUrl", url);
+      toast.success("Video uploaded!");
+    } catch (err) {
+      toast.error("Failed to upload video");
+    } finally {
+      setIsUploadingVideo(false);
+      setUploadProgress(0);
+    }
+  };
+
   const onSubmit = (data) => {
     if (isEditing) {
       editLesson(
-        { lessonId: lesson.id, updates: { title: data.title, video_url: data.videoUrl } },
-        { onSuccess: () => { reset(); onClose(); } },
+        {
+          lessonId: lesson.id,
+          updates: { title: data.title, video_url: data.videoUrl },
+        },
+        {
+          onSuccess: () => {
+            reset();
+            onClose();
+          },
+        },
       );
     } else {
       createLesson(
@@ -91,16 +137,31 @@ const LessonFormModal = ({ isOpen, onClose, courseId, sectionId, lesson, nextOrd
           video_url: data.videoUrl,
           lesson_order: nextOrder,
         },
-        { onSuccess: () => { reset(); onClose(); } },
+        {
+          onSuccess: () => {
+            reset();
+            onClose();
+          },
+        },
       );
     }
   };
 
   return (
-    <Modal title={isEditing ? "Edit Lesson" : "Add Lesson"} isOpen={isOpen} onClose={onClose}>
-      <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
+    <Modal
+      title={isEditing ? "Edit Lesson" : "Add Lesson"}
+      isOpen={isOpen}
+      onClose={onClose}
+    >
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="d-flex flex-column gap-3"
+      >
         <div>
-          <label className="form-label fw-semibold" style={{ color: "var(--color-grey-700)" }}>
+          <label
+            className="form-label fw-semibold"
+            style={{ color: "var(--color-grey-700)" }}
+          >
             Lesson Title
           </label>
           <input
@@ -110,28 +171,69 @@ const LessonFormModal = ({ isOpen, onClose, courseId, sectionId, lesson, nextOrd
             placeholder="Introduction to Flexbox"
             {...register("title", { required: "Title is required" })}
           />
-          {errors.title && <span className="text-danger small">{errors.title.message}</span>}
+          {errors.title && (
+            <span className="text-danger small">{errors.title.message}</span>
+          )}
         </div>
 
         <div>
-          <label className="form-label fw-semibold" style={{ color: "var(--color-grey-700)" }}>
-            Video URL
+          <label
+            className="form-label fw-semibold"
+            style={{ color: "var(--color-grey-700)" }}
+          >
+            Upload Video
           </label>
           <input
-            type="text"
-            className="form-control"
+            type="file"
+            accept="video/*"
+            className="form-control mb-2"
             style={inputStyle}
-            placeholder="https://example.com/video.mp4"
-            {...register("videoUrl", { required: "Video URL is required" })}
+            onChange={handleVideoUpload}
+            disabled={isUploadingVideo}
           />
-          {errors.videoUrl && <span className="text-danger small">{errors.videoUrl.message}</span>}
+
+          {isUploadingVideo && (
+            <div
+              className="progress mt-2 mb-2"
+              style={{
+                height: "8px",
+                backgroundColor: "var(--color-grey-200)",
+              }}
+            >
+              <div
+                className="progress-bar"
+                style={{
+                  width: `${uploadProgress}%`,
+                  backgroundColor: "var(--color-brand-600)",
+                }}
+              ></div>
+            </div>
+          )}
+
+          {currentVideoUrl && !isUploadingVideo && (
+            <div className="alert alert-success p-2 small m-0 mt-2 fw-semibold">
+              ✅ Video uploaded successfully!
+            </div>
+          )}
+
+          <input
+            type="hidden"
+            {...register("videoUrl", { required: "Please upload a video" })}
+          />
+          {errors.videoUrl && (
+            <span className="text-danger small">{errors.videoUrl.message}</span>
+          )}
         </div>
 
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || isUploadingVideo}
           className="btn w-100 fw-bold mt-2"
-          style={{ backgroundColor: "var(--color-brand-600)", color: "var(--color-blue-text)", padding: "10px" }}
+          style={{
+            backgroundColor: "var(--color-brand-600)",
+            color: "var(--color-blue-text)",
+            padding: "10px",
+          }}
         >
           {isLoading ? "Saving..." : isEditing ? "Save Changes" : "Add Lesson"}
         </button>
@@ -139,9 +241,15 @@ const LessonFormModal = ({ isOpen, onClose, courseId, sectionId, lesson, nextOrd
     </Modal>
   );
 };
-
 /** One lesson row inside a section, with edit/delete/reorder controls. */
-const LessonRow = ({ lesson, index, total, courseId, sectionId, allLessons }) => {
+const LessonRow = ({
+  lesson,
+  index,
+  total,
+  courseId,
+  sectionId,
+  allLessons,
+}) => {
   const { removeLesson } = useDeleteLesson(courseId);
   const { moveLessons } = useReorderLessons(courseId);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -168,10 +276,16 @@ const LessonRow = ({ lesson, index, total, courseId, sectionId, allLessons }) =>
       />
       <FaPlayCircle style={{ color: "var(--color-grey-400)" }} />
       <div className="flex-grow-1" style={{ minWidth: 0 }}>
-        <div className="fw-semibold text-truncate" style={{ color: "var(--color-grey-900)" }}>
+        <div
+          className="fw-semibold text-truncate"
+          style={{ color: "var(--color-grey-900)" }}
+        >
           {lesson.title}
         </div>
-        <div className="text-truncate" style={{ color: "var(--color-grey-500)", fontSize: "0.8rem" }}>
+        <div
+          className="text-truncate"
+          style={{ color: "var(--color-grey-500)", fontSize: "0.8rem" }}
+        >
           {lesson.video_url}
         </div>
       </div>
@@ -214,7 +328,10 @@ const SectionCard = ({ section, index, total, courseId, allSections }) => {
   const [isAddLessonOpen, setIsAddLessonOpen] = useState(false);
 
   const lessons = useMemo(
-    () => [...(section.lessons ?? [])].sort((a, b) => (a.lesson_order ?? 0) - (b.lesson_order ?? 0)),
+    () =>
+      [...(section.lessons ?? [])].sort(
+        (a, b) => (a.lesson_order ?? 0) - (b.lesson_order ?? 0),
+      ),
     [section.lessons],
   );
 
@@ -229,14 +346,20 @@ const SectionCard = ({ section, index, total, courseId, allSections }) => {
 
   const saveRename = () => {
     if (titleDraft.trim() && titleDraft !== section.title) {
-      editSection({ sectionId: section.id, updates: { title: titleDraft.trim() } });
+      editSection({
+        sectionId: section.id,
+        updates: { title: titleDraft.trim() },
+      });
     }
     setIsRenaming(false);
   };
 
   return (
     <div className="rounded-3 mb-3" style={cardStyle}>
-      <div className="d-flex align-items-center gap-3 p-3" style={{ borderBottom: "1px solid var(--color-grey-100)" }}>
+      <div
+        className="d-flex align-items-center gap-3 p-3"
+        style={{ borderBottom: "1px solid var(--color-grey-100)" }}
+      >
         <ReorderButtons
           onUp={() => swapWith(index - 1)}
           onDown={() => swapWith(index + 1)}
@@ -257,7 +380,10 @@ const SectionCard = ({ section, index, total, courseId, allSections }) => {
             onKeyDown={(e) => e.key === "Enter" && saveRename()}
           />
         ) : (
-          <h6 className="fw-bold m-0 flex-grow-1" style={{ color: "var(--color-grey-900)" }}>
+          <h6
+            className="fw-bold m-0 flex-grow-1"
+            style={{ color: "var(--color-grey-900)" }}
+          >
             {section.title}
           </h6>
         )}
@@ -282,7 +408,10 @@ const SectionCard = ({ section, index, total, courseId, allSections }) => {
 
       <div className="p-2">
         {lessons.length === 0 ? (
-          <p className="m-0 p-3 text-center" style={{ color: "var(--color-grey-400)" }}>
+          <p
+            className="m-0 p-3 text-center"
+            style={{ color: "var(--color-grey-400)" }}
+          >
             No lessons yet.
           </p>
         ) : (
@@ -325,7 +454,10 @@ const AddSectionForm = ({ courseId, nextOrder }) => {
 
   const handleAdd = () => {
     if (!title.trim()) return;
-    createSection({ title: title.trim(), section_order: nextOrder }, { onSuccess: () => setTitle("") });
+    createSection(
+      { title: title.trim(), section_order: nextOrder },
+      { onSuccess: () => setTitle("") },
+    );
   };
 
   return (
@@ -343,7 +475,10 @@ const AddSectionForm = ({ courseId, nextOrder }) => {
         onClick={handleAdd}
         disabled={isLoading}
         className="btn fw-semibold d-flex align-items-center gap-2 flex-shrink-0"
-        style={{ backgroundColor: "var(--color-brand-600)", color: "var(--color-blue-text)" }}
+        style={{
+          backgroundColor: "var(--color-brand-600)",
+          color: "var(--color-blue-text)",
+        }}
       >
         <FaPlus size={12} /> Add Section
       </button>
@@ -356,16 +491,25 @@ const CourseBuilder = () => {
   const { data: course, isLoading, error } = useCourseCurriculum(courseId);
 
   const sections = useMemo(
-    () => [...(course?.sections ?? [])].sort((a, b) => (a.section_order ?? 0) - (b.section_order ?? 0)),
+    () =>
+      [...(course?.sections ?? [])].sort(
+        (a, b) => (a.section_order ?? 0) - (b.section_order ?? 0),
+      ),
     [course?.sections],
   );
 
   if (isLoading) {
-    return <div style={{ color: "var(--color-grey-700)" }}>Loading curriculum...</div>;
+    return (
+      <div style={{ color: "var(--color-grey-700)" }}>
+        Loading curriculum...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-danger">Error loading course: {error.message}</div>;
+    return (
+      <div className="text-danger">Error loading course: {error.message}</div>
+    );
   }
 
   return (
@@ -390,11 +534,15 @@ const CourseBuilder = () => {
       {sections.length === 0 ? (
         <div
           className="text-center p-5 rounded-3 mb-3"
-          style={{ backgroundColor: "var(--color-grey-0)", border: "1px dashed var(--color-grey-300)" }}
+          style={{
+            backgroundColor: "var(--color-grey-0)",
+            border: "1px dashed var(--color-grey-300)",
+          }}
         >
           <FaLayerGroup size={28} style={{ color: "var(--color-grey-400)" }} />
           <p className="mt-3 mb-0" style={{ color: "var(--color-grey-500)" }}>
-            No sections yet. Add your first section below to start building the curriculum.
+            No sections yet. Add your first section below to start building the
+            curriculum.
           </p>
         </div>
       ) : (

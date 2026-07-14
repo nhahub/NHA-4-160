@@ -7,7 +7,9 @@ import { useTenantCourses } from "../../hooks/useTenantCourses";
 import { useCreateCourse } from "../../hooks/useCreateCourse";
 import { useUpdateCourse } from "../../hooks/useUpdateCourse";
 import { useDeleteCourse } from "../../hooks/useDeleteCourse";
+import { uploadCourseImage } from "../../services/storageApi";
 import Modal from "../../components/Modal";
+import toast from "react-hot-toast";
 
 const inputStyle = {
   backgroundColor: "var(--color-grey-50)",
@@ -29,10 +31,14 @@ const CourseFormModal = ({ isOpen, onClose, tenantId, course }) => {
   const { editCourse, isLoading: isEditingLoading } = useUpdateCourse(tenantId);
   const isLoading = isCreating || isEditingLoading;
 
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm({
     values: {
@@ -40,8 +46,26 @@ const CourseFormModal = ({ isOpen, onClose, tenantId, course }) => {
       description: course?.description ?? "",
       price: course?.price ?? "",
       status: course?.status ?? "draft",
+      thumbnail_url: course?.thumbnail_url ?? "",
     },
   });
+
+  const thumbnailUrl = watch("thumbnail_url");
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      setIsUploadingImage(true);
+      const url = await uploadCourseImage(file);
+      setValue("thumbnail_url", url);
+      toast.success("Image uploaded!");
+    } catch (err) {
+      toast.error("Failed to upload image");
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
 
   const onSubmit = (data) => {
     const payload = {
@@ -49,20 +73,21 @@ const CourseFormModal = ({ isOpen, onClose, tenantId, course }) => {
       description: data.description,
       price: Number(data.price),
       status: data.status,
+      thumbnail_url: data.thumbnail_url,
     };
 
     if (isEditing) {
       editCourse(
         {
           courseId: course.id,
-          updates: {
-            title: payload.title,
-            description: payload.description,
-            price: payload.price,
-            status: payload.status,
+          updates: payload,
+        },
+        {
+          onSuccess: () => {
+            reset();
+            onClose();
           },
         },
-        { onSuccess: () => { reset(); onClose(); } },
       );
     } else {
       createNewCourse(payload, {
@@ -75,10 +100,20 @@ const CourseFormModal = ({ isOpen, onClose, tenantId, course }) => {
   };
 
   return (
-    <Modal title={isEditing ? "Edit Course" : "Create New Course"} isOpen={isOpen} onClose={onClose}>
-      <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
+    <Modal
+      title={isEditing ? "Edit Course" : "Create New Course"}
+      isOpen={isOpen}
+      onClose={onClose}
+    >
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="d-flex flex-column gap-3"
+      >
         <div>
-          <label className="form-label fw-semibold" style={{ color: "var(--color-grey-700)" }}>
+          <label
+            className="form-label fw-semibold"
+            style={{ color: "var(--color-grey-700)" }}
+          >
             Title
           </label>
           <input
@@ -88,11 +123,16 @@ const CourseFormModal = ({ isOpen, onClose, tenantId, course }) => {
             placeholder="Advanced UI Design"
             {...register("title", { required: "Title is required" })}
           />
-          {errors.title && <span className="text-danger small">{errors.title.message}</span>}
+          {errors.title && (
+            <span className="text-danger small">{errors.title.message}</span>
+          )}
         </div>
 
         <div>
-          <label className="form-label fw-semibold" style={{ color: "var(--color-grey-700)" }}>
+          <label
+            className="form-label fw-semibold"
+            style={{ color: "var(--color-grey-700)" }}
+          >
             Description
           </label>
           <textarea
@@ -104,9 +144,50 @@ const CourseFormModal = ({ isOpen, onClose, tenantId, course }) => {
           />
         </div>
 
+        <div>
+          <label
+            className="form-label fw-semibold"
+            style={{ color: "var(--color-grey-700)" }}
+          >
+            Course Image (Thumbnail)
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            className="form-control mb-2"
+            style={inputStyle}
+            onChange={handleImageUpload}
+            disabled={isUploadingImage}
+          />
+          {isUploadingImage && (
+            <span
+              className="small fw-bold"
+              style={{ color: "var(--color-brand-600)" }}
+            >
+              Uploading image...
+            </span>
+          )}
+          {thumbnailUrl && !isUploadingImage && (
+            <img
+              src={thumbnailUrl}
+              alt="Preview"
+              className="rounded-3 mt-2"
+              style={{
+                height: "60px",
+                width: "100px",
+                objectFit: "cover",
+                border: "1px solid var(--color-grey-200)",
+              }}
+            />
+          )}
+        </div>
+
         <div className="row g-3">
           <div className="col-6">
-            <label className="form-label fw-semibold" style={{ color: "var(--color-grey-700)" }}>
+            <label
+              className="form-label fw-semibold"
+              style={{ color: "var(--color-grey-700)" }}
+            >
               Price
             </label>
             <input
@@ -116,15 +197,27 @@ const CourseFormModal = ({ isOpen, onClose, tenantId, course }) => {
               className="form-control"
               style={inputStyle}
               placeholder="49.99"
-              {...register("price", { required: "Price is required", min: { value: 0, message: "Must be 0 or more" } })}
+              {...register("price", {
+                required: "Price is required",
+                min: { value: 0, message: "Must be 0 or more" },
+              })}
             />
-            {errors.price && <span className="text-danger small">{errors.price.message}</span>}
+            {errors.price && (
+              <span className="text-danger small">{errors.price.message}</span>
+            )}
           </div>
           <div className="col-6">
-            <label className="form-label fw-semibold" style={{ color: "var(--color-grey-700)" }}>
+            <label
+              className="form-label fw-semibold"
+              style={{ color: "var(--color-grey-700)" }}
+            >
               Status
             </label>
-            <select className="form-select" style={inputStyle} {...register("status")}>
+            <select
+              className="form-select"
+              style={inputStyle}
+              {...register("status")}
+            >
               <option value="draft">Draft</option>
               <option value="published">Published</option>
             </select>
@@ -133,11 +226,19 @@ const CourseFormModal = ({ isOpen, onClose, tenantId, course }) => {
 
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || isUploadingImage}
           className="btn w-100 fw-bold mt-2"
-          style={{ backgroundColor: "var(--color-brand-600)", color: "var(--color-blue-text)", padding: "10px" }}
+          style={{
+            backgroundColor: "var(--color-brand-600)",
+            color: "var(--color-blue-text)",
+            padding: "10px",
+          }}
         >
-          {isLoading ? "Saving..." : isEditing ? "Save Changes" : "Create Course"}
+          {isLoading
+            ? "Saving..."
+            : isEditing
+              ? "Save Changes"
+              : "Create Course"}
         </button>
       </form>
     </Modal>
@@ -154,14 +255,17 @@ const DeleteCourseModal = ({ isOpen, onClose, tenantId, course }) => {
   return (
     <Modal title="Delete Course" isOpen={isOpen} onClose={onClose}>
       <p style={{ color: "var(--color-grey-700)" }}>
-        Are you sure you want to delete <strong>{course?.title}</strong>? This will also remove its
-        sections and lessons. This action can't be undone.
+        Are you sure you want to delete <strong>{course?.title}</strong>? This
+        will also remove its sections and lessons. This action can't be undone.
       </p>
       <div className="d-flex gap-2 mt-3">
         <button
           onClick={onClose}
           className="btn flex-grow-1 fw-semibold"
-          style={{ backgroundColor: "var(--color-grey-100)", color: "var(--color-grey-800)" }}
+          style={{
+            backgroundColor: "var(--color-grey-100)",
+            color: "var(--color-grey-800)",
+          }}
         >
           Cancel
         </button>
@@ -200,28 +304,40 @@ const Courses = () => {
   };
 
   if (isLoading) {
-    return <div style={{ color: "var(--color-grey-700)" }}>Loading courses...</div>;
+    return (
+      <div style={{ color: "var(--color-grey-700)" }}>Loading courses...</div>
+    );
   }
 
   if (error) {
-    return <div className="text-danger">Error loading courses: {error.message}</div>;
+    return (
+      <div className="text-danger">Error loading courses: {error.message}</div>
+    );
   }
 
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h2 className="fw-bold mb-1" style={{ color: "var(--color-grey-900)" }}>
+          <h2
+            className="fw-bold mb-1"
+            style={{ color: "var(--color-grey-900)" }}
+          >
             Courses
           </h2>
           <p className="m-0" style={{ color: "var(--color-grey-500)" }}>
-            {courses?.length ?? 0} course{courses?.length === 1 ? "" : "s"} in your academy
+            {courses?.length ?? 0} course{courses?.length === 1 ? "" : "s"} in
+            your academy
           </p>
         </div>
         <button
           onClick={openCreate}
           className="btn fw-bold d-flex align-items-center gap-2"
-          style={{ backgroundColor: "var(--color-brand-600)", color: "var(--color-blue-text)", padding: "10px 18px" }}
+          style={{
+            backgroundColor: "var(--color-brand-600)",
+            color: "var(--color-blue-text)",
+            padding: "10px 18px",
+          }}
         >
           <FaPlus /> Create Course
         </button>
@@ -230,11 +346,15 @@ const Courses = () => {
       {courses?.length === 0 ? (
         <div
           className="text-center p-5 rounded-3"
-          style={{ backgroundColor: "var(--color-grey-0)", border: "1px dashed var(--color-grey-300)" }}
+          style={{
+            backgroundColor: "var(--color-grey-0)",
+            border: "1px dashed var(--color-grey-300)",
+          }}
         >
           <FaBook size={32} style={{ color: "var(--color-grey-400)" }} />
           <p className="mt-3 mb-0" style={{ color: "var(--color-grey-500)" }}>
-            No courses yet. Create your first course to start building a curriculum.
+            No courses yet. Create your first course to start building a
+            curriculum.
           </p>
         </div>
       ) : (
@@ -256,42 +376,65 @@ const Courses = () => {
                     backgroundColor: "var(--color-grey-100)",
                   }}
                 >
-                  <FaBook size={28} style={{ color: "var(--color-grey-400)" }} />
+                  <FaBook
+                    size={28}
+                    style={{ color: "var(--color-grey-400)" }}
+                  />
                 </div>
 
                 <div className="p-3 d-flex flex-column flex-grow-1">
                   <div className="d-flex justify-content-between align-items-start gap-2 mb-2">
-                    <h5 className="fw-bold m-0" style={{ color: "var(--color-grey-900)" }}>
+                    <h5
+                      className="fw-bold m-0"
+                      style={{ color: "var(--color-grey-900)" }}
+                    >
                       {course.title}
                     </h5>
-                    <span className="badge rounded-pill" style={statusBadge(course.status)}>
+                    <span
+                      className="badge rounded-pill"
+                      style={statusBadge(course.status)}
+                    >
                       {course.status}
                     </span>
                   </div>
 
                   <p
                     className="mb-3 flex-grow-1"
-                    style={{ color: "var(--color-grey-500)", fontSize: "0.9rem" }}
+                    style={{
+                      color: "var(--color-grey-500)",
+                      fontSize: "0.9rem",
+                    }}
                   >
                     {course.description || "No description yet."}
                   </p>
 
-                  <div className="fw-bold mb-3" style={{ color: "var(--color-brand-600)" }}>
+                  <div
+                    className="fw-bold mb-3"
+                    style={{ color: "var(--color-brand-600)" }}
+                  >
                     ${Number(course.price ?? 0).toFixed(2)}
                   </div>
 
                   <div className="d-flex gap-2">
                     <button
-                      onClick={() => navigate(`/dashboard/courses/${course.id}`)}
+                      onClick={() =>
+                        navigate(`/dashboard/courses/${course.id}`)
+                      }
                       className="btn btn-sm flex-grow-1 fw-semibold d-flex align-items-center justify-content-center gap-2"
-                      style={{ backgroundColor: "var(--color-brand-600)", color: "var(--color-blue-text)" }}
+                      style={{
+                        backgroundColor: "var(--color-brand-600)",
+                        color: "var(--color-blue-text)",
+                      }}
                     >
                       <FaLayerGroup /> Curriculum
                     </button>
                     <button
                       onClick={() => openEdit(course)}
                       className="btn btn-sm"
-                      style={{ border: "1px solid var(--color-grey-300)", color: "var(--color-grey-700)" }}
+                      style={{
+                        border: "1px solid var(--color-grey-300)",
+                        color: "var(--color-grey-700)",
+                      }}
                       title="Edit course"
                     >
                       <FaPen />
@@ -299,7 +442,10 @@ const Courses = () => {
                     <button
                       onClick={() => setDeleteTarget(course)}
                       className="btn btn-sm"
-                      style={{ border: "1px solid var(--color-grey-300)", color: "#dc2626" }}
+                      style={{
+                        border: "1px solid var(--color-grey-300)",
+                        color: "#dc2626",
+                      }}
                       title="Delete course"
                     >
                       <FaTrash />
