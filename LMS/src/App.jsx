@@ -18,6 +18,8 @@ import CourseDetails from "./pages/student/CourseDetails";
 import StudentProfile from "./pages/student/StudentProfile";
 import CoursePlayer from "./pages/student/CoursePlayer";
 import BuyCourses from "./pages/student/BuyCourses";
+import AcademyAbout from "./pages/student/AcademyAbout";
+import MyCourses from "./pages/student/MyCourses";
 
 const AdminStats = () => <div>System Stats Content</div>;
 const AdminTenants = () => <div>Manage Tenants Content</div>;
@@ -56,6 +58,8 @@ function App() {
           <Route path="/:tenantId" element={<StudentLayout />}>
             <Route index element={<AcademyHome />} />
             <Route path="course/:courseId" element={<CourseDetails />} />
+            <Route path="about" element={<AcademyAbout />} />
+            <Route path="my-courses" element={<MyCourses />} />
             <Route path="buy" element={<BuyCourses />} />
             <Route path="profile" element={<StudentProfile />} />
             <Route path="learn/:courseId" element={<CoursePlayer />} />

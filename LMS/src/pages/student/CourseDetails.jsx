@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getCourseCurriculum } from "../../services/courseService";
-import { FaLock, FaPlayCircle, FaUnlock } from "react-icons/fa";
+import { FaLock, FaPlayCircle, FaUnlock, FaShoppingCart } from "react-icons/fa";
 import { supabase } from "../../config/supabase";
 
 const CourseDetails = () => {
@@ -22,10 +22,31 @@ const CourseDetails = () => {
     },
   });
 
+  const { data: isEnrolled, isLoading: isEnrollmentLoading } = useQuery({
+    queryKey: ["checkEnrollment", courseId, currentUser?.id],
+    queryFn: async () => {
+      if (!currentUser) return false;
+      const { data, error } = await supabase
+        .from("enrollments")
+        .select("id")
+        .eq("student_id", currentUser.id)
+        .eq("course_id", courseId)
+        .maybeSingle();
+
+      if (error) throw error;
+      return !!data;
+    },
+    enabled: !!currentUser,
+  });
+
   const isStudentLoggedIn = !!currentUser;
 
-  if (isCourseLoading || isUserLoading)
-    return <div className="py-5 text-center">Loading course details...</div>;
+  if (isCourseLoading || isUserLoading || isEnrollmentLoading)
+    return (
+      <div className="py-5 text-center fw-bold text-muted">
+        Loading course details...
+      </div>
+    );
 
   return (
     <div className="row g-5">
@@ -75,7 +96,7 @@ const CourseDetails = () => {
                         <span>{lesson.title}</span>
                       </div>
 
-                      {isStudentLoggedIn ? (
+                      {isEnrolled ? (
                         <span
                           className="badge"
                           style={{
@@ -114,41 +135,64 @@ const CourseDetails = () => {
               className="fw-bold mb-3"
               style={{ color: "var(--color-grey-900)" }}
             >
-              ${course.price}
+              ${Number(course.price).toFixed(2)}
             </h2>
 
-            {isStudentLoggedIn ? (
-              <Link
-                to={`/${tenantId}/learn/${courseId}`}
-                className="btn w-100 fw-bold py-2 mb-2 d-flex justify-content-center align-items-center gap-2"
-                style={{
-                  backgroundColor: "var(--color-brand-600)",
-                  color: "var(--color-blue-text)",
-                }}
-              >
-                <FaUnlock /> Start Learning
-              </Link>
+            {!isStudentLoggedIn ? (
+              <>
+                <Link
+                  to={`/login?academy=${tenantId}`}
+                  className="btn w-100 fw-bold py-2 mb-2"
+                  style={{
+                    backgroundColor: "var(--color-brand-600)",
+                    color: "var(--color-blue-text)",
+                  }}
+                >
+                  Login to Enroll
+                </Link>
+                <p
+                  className="small mt-2"
+                  style={{ color: "var(--color-grey-500)" }}
+                >
+                  You need an account to view this course.
+                </p>
+              </>
+            ) : isEnrolled ? (
+              <>
+                <Link
+                  to={`/${tenantId}/learn/${courseId}`}
+                  className="btn w-100 fw-bold py-2 mb-2 d-flex justify-content-center align-items-center gap-2"
+                  style={{
+                    backgroundColor: "var(--color-brand-600)",
+                    color: "var(--color-blue-text)",
+                  }}
+                >
+                  <FaUnlock /> Start Learning
+                </Link>
+                <p className="small mt-2 text-success fw-medium">
+                  You are enrolled in this course.
+                </p>
+              </>
             ) : (
-              <Link
-                to={`/login?academy=${tenantId}`}
-                className="btn w-100 fw-bold py-2 mb-2"
-                style={{
-                  backgroundColor: "var(--color-brand-600)",
-                  color: "var(--color-blue-text)",
-                }}
-              >
-                Login to Watch
-              </Link>
+              <>
+                <Link
+                  to={`/${tenantId}/buy`}
+                  className="btn w-100 fw-bold py-2 mb-2 d-flex justify-content-center align-items-center gap-2"
+                  style={{
+                    backgroundColor: "var(--color-grey-200)",
+                    color: "var(--color-grey-800)",
+                  }}
+                >
+                  <FaShoppingCart /> Buy This Course
+                </Link>
+                <p
+                  className="small mt-2"
+                  style={{ color: "var(--color-grey-500)" }}
+                >
+                  You are not enrolled. Contact the admin to purchase.
+                </p>
+              </>
             )}
-
-            <p
-              className="small mt-2"
-              style={{ color: "var(--color-grey-500)" }}
-            >
-              {isStudentLoggedIn
-                ? "You have full access to this course."
-                : "Student account required to access videos."}
-            </p>
           </div>
         </div>
       </div>

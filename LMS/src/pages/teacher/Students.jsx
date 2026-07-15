@@ -44,9 +44,15 @@ const AddStudentModal = ({ isOpen, onClose, tenantId }) => {
 
   return (
     <Modal title="Add New Student" isOpen={isOpen} onClose={onClose}>
-      <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="d-flex flex-column gap-3"
+      >
         <div>
-          <label className="form-label fw-semibold" style={{ color: "var(--color-grey-700)" }}>
+          <label
+            className="form-label fw-semibold"
+            style={{ color: "var(--color-grey-700)" }}
+          >
             Full Name
           </label>
           <input
@@ -56,11 +62,16 @@ const AddStudentModal = ({ isOpen, onClose, tenantId }) => {
             placeholder="Ahmed Ali"
             {...register("name", { required: "Name is required" })}
           />
-          {errors.name && <span className="text-danger small">{errors.name.message}</span>}
+          {errors.name && (
+            <span className="text-danger small">{errors.name.message}</span>
+          )}
         </div>
 
         <div>
-          <label className="form-label fw-semibold" style={{ color: "var(--color-grey-700)" }}>
+          <label
+            className="form-label fw-semibold"
+            style={{ color: "var(--color-grey-700)" }}
+          >
             Email
           </label>
           <input
@@ -70,11 +81,16 @@ const AddStudentModal = ({ isOpen, onClose, tenantId }) => {
             placeholder="student@example.com"
             {...register("email", { required: "Email is required" })}
           />
-          {errors.email && <span className="text-danger small">{errors.email.message}</span>}
+          {errors.email && (
+            <span className="text-danger small">{errors.email.message}</span>
+          )}
         </div>
 
         <div>
-          <label className="form-label fw-semibold" style={{ color: "var(--color-grey-700)" }}>
+          <label
+            className="form-label fw-semibold"
+            style={{ color: "var(--color-grey-700)" }}
+          >
             Phone
           </label>
           <input
@@ -84,11 +100,16 @@ const AddStudentModal = ({ isOpen, onClose, tenantId }) => {
             placeholder="010xxxxxxx"
             {...register("phone", { required: "Phone is required" })}
           />
-          {errors.phone && <span className="text-danger small">{errors.phone.message}</span>}
+          {errors.phone && (
+            <span className="text-danger small">{errors.phone.message}</span>
+          )}
         </div>
 
         <div>
-          <label className="form-label fw-semibold" style={{ color: "var(--color-grey-700)" }}>
+          <label
+            className="form-label fw-semibold"
+            style={{ color: "var(--color-grey-700)" }}
+          >
             Temporary Password
           </label>
           <input
@@ -101,14 +122,20 @@ const AddStudentModal = ({ isOpen, onClose, tenantId }) => {
               minLength: { value: 6, message: "Minimum 6 characters" },
             })}
           />
-          {errors.password && <span className="text-danger small">{errors.password.message}</span>}
+          {errors.password && (
+            <span className="text-danger small">{errors.password.message}</span>
+          )}
         </div>
 
         <button
           type="submit"
           disabled={isLoading}
           className="btn w-100 fw-bold mt-2"
-          style={{ backgroundColor: "var(--color-brand-600)", color: "var(--color-blue-text)", padding: "10px" }}
+          style={{
+            backgroundColor: "var(--color-brand-600)",
+            color: "var(--color-blue-text)",
+            padding: "10px",
+          }}
         >
           {isLoading ? "Adding..." : "Add Student"}
         </button>
@@ -117,7 +144,13 @@ const AddStudentModal = ({ isOpen, onClose, tenantId }) => {
   );
 };
 
-const EnrollStudentModal = ({ isOpen, onClose, tenantId, student, courses }) => {
+const EnrollStudentModal = ({
+  isOpen,
+  onClose,
+  tenantId,
+  student,
+  courses,
+}) => {
   const { enrollStudent, isLoading } = useEnrollStudent(tenantId);
   const [courseId, setCourseId] = useState("");
 
@@ -138,10 +171,17 @@ const EnrollStudentModal = ({ isOpen, onClose, tenantId, student, courses }) => 
   };
 
   return (
-    <Modal title={`Enroll ${student?.name ?? ""}`} isOpen={isOpen} onClose={onClose}>
+    <Modal
+      title={`Enroll ${student?.name ?? ""}`}
+      isOpen={isOpen}
+      onClose={onClose}
+    >
       <div className="d-flex flex-column gap-3">
         <div>
-          <label className="form-label fw-semibold" style={{ color: "var(--color-grey-700)" }}>
+          <label
+            className="form-label fw-semibold"
+            style={{ color: "var(--color-grey-700)" }}
+          >
             Select Course
           </label>
           <select
@@ -158,7 +198,10 @@ const EnrollStudentModal = ({ isOpen, onClose, tenantId, student, courses }) => 
             ))}
           </select>
           {courses?.length === 0 && (
-            <p className="small mt-2" style={{ color: "var(--color-grey-500)" }}>
+            <p
+              className="small mt-2"
+              style={{ color: "var(--color-grey-500)" }}
+            >
               You haven't created any courses yet.
             </p>
           )}
@@ -168,7 +211,11 @@ const EnrollStudentModal = ({ isOpen, onClose, tenantId, student, courses }) => 
           onClick={handleEnroll}
           disabled={isLoading}
           className="btn w-100 fw-bold mt-2"
-          style={{ backgroundColor: "var(--color-brand-600)", color: "var(--color-blue-text)", padding: "10px" }}
+          style={{
+            backgroundColor: "var(--color-brand-600)",
+            color: "var(--color-blue-text)",
+            padding: "10px",
+          }}
         >
           {isLoading ? "Enrolling..." : "Enroll Student"}
         </button>
@@ -181,14 +228,17 @@ const Students = () => {
   const { data: profile } = useTeacherProfile();
   const tenantId = profile?.tenant_id;
 
-  const { data: students, isLoading: isStudentsLoading, error } = useStudents(tenantId);
+  const {
+    data: students,
+    isLoading: isStudentsLoading,
+    error,
+  } = useStudents(tenantId);
   const { data: enrollments } = useEnrollments(tenantId);
   const { data: courses } = useTenantCourses(tenantId);
 
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [enrollTarget, setEnrollTarget] = useState(null);
 
-  // Map studentId -> array of course titles, so we can show it in the table
   const enrollmentsByStudent = useMemo(() => {
     const map = {};
     enrollments?.forEach((en) => {
@@ -199,28 +249,40 @@ const Students = () => {
   }, [enrollments]);
 
   if (isStudentsLoading) {
-    return <div style={{ color: "var(--color-grey-700)" }}>Loading students...</div>;
+    return (
+      <div style={{ color: "var(--color-grey-700)" }}>Loading students...</div>
+    );
   }
 
   if (error) {
-    return <div className="text-danger">Error loading students: {error.message}</div>;
+    return (
+      <div className="text-danger">Error loading students: {error.message}</div>
+    );
   }
 
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h2 className="fw-bold mb-1" style={{ color: "var(--color-grey-900)" }}>
+          <h2
+            className="fw-bold mb-1"
+            style={{ color: "var(--color-grey-900)" }}
+          >
             Students
           </h2>
           <p className="m-0" style={{ color: "var(--color-grey-500)" }}>
-            {students?.length ?? 0} student{students?.length === 1 ? "" : "s"} in your academy
+            {students?.length ?? 0} student{students?.length === 1 ? "" : "s"}{" "}
+            in your academy
           </p>
         </div>
         <button
           onClick={() => setIsAddOpen(true)}
           className="btn fw-bold d-flex align-items-center gap-2"
-          style={{ backgroundColor: "var(--color-brand-600)", color: "var(--color-blue-text)", padding: "10px 18px" }}
+          style={{
+            backgroundColor: "var(--color-brand-600)",
+            color: "var(--color-blue-text)",
+            padding: "10px 18px",
+          }}
         >
           <FaPlus /> Add Student
         </button>
@@ -229,9 +291,15 @@ const Students = () => {
       {students?.length === 0 ? (
         <div
           className="text-center p-5 rounded-3"
-          style={{ backgroundColor: "var(--color-grey-0)", border: "1px dashed var(--color-grey-300)" }}
+          style={{
+            backgroundColor: "var(--color-grey-0)",
+            border: "1px dashed var(--color-grey-300)",
+          }}
         >
-          <FaUserGraduate size={32} style={{ color: "var(--color-grey-400)" }} />
+          <FaUserGraduate
+            size={32}
+            style={{ color: "var(--color-grey-400)" }}
+          />
           <p className="mt-3 mb-0" style={{ color: "var(--color-grey-500)" }}>
             No students yet. Add your first student to get started.
           </p>
@@ -239,21 +307,64 @@ const Students = () => {
       ) : (
         <div
           className="rounded-3 overflow-hidden"
-          style={{ backgroundColor: "var(--color-grey-0)", border: "1px solid var(--color-grey-200)", boxShadow: "var(--shadow-sm)" }}
+          style={{
+            backgroundColor: "var(--color-grey-0)",
+            border: "1px solid var(--color-grey-200)",
+            boxShadow: "var(--shadow-sm)",
+          }}
         >
           <table className="table m-0 align-middle">
             <thead>
               <tr style={{ backgroundColor: "var(--color-grey-50)" }}>
-                <th className="p-3" style={{ color: "var(--color-grey-600)" }}>Student</th>
-                <th className="p-3" style={{ color: "var(--color-grey-600)" }}>Phone</th>
-                <th className="p-3" style={{ color: "var(--color-grey-600)" }}>Enrolled Courses</th>
-                <th className="p-3" style={{ color: "var(--color-grey-600)" }}></th>
+                <th
+                  className="p-3 border-0"
+                  style={{
+                    color: "var(--color-grey-600)",
+                    backgroundColor: "var(--color-grey-50)",
+                  }}
+                >
+                  Student
+                </th>
+                <th
+                  className="p-3 border-0"
+                  style={{
+                    color: "var(--color-grey-600)",
+                    backgroundColor: "var(--color-grey-50)",
+                  }}
+                >
+                  Phone
+                </th>
+                <th
+                  className="p-3 border-0"
+                  style={{
+                    color: "var(--color-grey-600)",
+                    backgroundColor: "var(--color-grey-50)",
+                  }}
+                >
+                  Enrolled Courses
+                </th>
+                <th
+                  className="p-3 border-0"
+                  style={{
+                    color: "var(--color-grey-600)",
+                    backgroundColor: "var(--color-grey-50)",
+                  }}
+                ></th>
               </tr>
             </thead>
             <tbody>
               {students?.map((student) => (
-                <tr key={student.id} style={{ borderTop: "1px solid var(--color-grey-100)" }}>
-                  <td className="p-3">
+                <tr
+                  key={student.id}
+                  style={{
+                    borderTop: "1px solid var(--color-grey-200)",
+                    backgroundColor: "var(--color-grey-0)",
+                  }}
+                >
+                  <td
+                    className="p-3 border-0"
+                    style={{ backgroundColor: "var(--color-grey-0)" }}
+                  >
                     <div className="d-flex align-items-center gap-3">
                       <div
                         className="d-flex align-items-center justify-content-center rounded-circle fw-bold flex-shrink-0"
@@ -268,17 +379,36 @@ const Students = () => {
                         {initialsOf(student.name)}
                       </div>
                       <div>
-                        <div className="fw-semibold" style={{ color: "var(--color-grey-900)" }}>
+                        <div
+                          className="fw-semibold"
+                          style={{ color: "var(--color-grey-900)" }}
+                        >
                           {student.name}
                         </div>
-                        <div style={{ color: "var(--color-grey-500)", fontSize: "0.85rem" }}>
+                        <div
+                          style={{
+                            color: "var(--color-grey-500)",
+                            fontSize: "0.85rem",
+                          }}
+                        >
                           {student.email}
                         </div>
                       </div>
                     </div>
                   </td>
-                  <td className="p-3" style={{ color: "var(--color-grey-700)" }}>{student.phone}</td>
-                  <td className="p-3">
+                  <td
+                    className="p-3 border-0"
+                    style={{
+                      color: "var(--color-grey-700)",
+                      backgroundColor: "var(--color-grey-0)",
+                    }}
+                  >
+                    {student.phone}
+                  </td>
+                  <td
+                    className="p-3 border-0"
+                    style={{ backgroundColor: "var(--color-grey-0)" }}
+                  >
                     {enrollmentsByStudent[student.id]?.length ? (
                       <div className="d-flex flex-wrap gap-1">
                         {enrollmentsByStudent[student.id].map((title, idx) => (
@@ -297,10 +427,15 @@ const Students = () => {
                         ))}
                       </div>
                     ) : (
-                      <span style={{ color: "var(--color-grey-400)" }}>No courses yet</span>
+                      <span style={{ color: "var(--color-grey-400)" }}>
+                        No courses yet
+                      </span>
                     )}
                   </td>
-                  <td className="p-3 text-end">
+                  <td
+                    className="p-3 text-end border-0"
+                    style={{ backgroundColor: "var(--color-grey-0)" }}
+                  >
                     <button
                       onClick={() => setEnrollTarget(student)}
                       className="btn btn-sm d-flex align-items-center gap-2 ms-auto"

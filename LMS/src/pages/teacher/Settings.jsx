@@ -2,7 +2,10 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FaBuilding } from "react-icons/fa";
 import { useTeacherProfile } from "../../hooks/useTeacherProfile";
-import { useAcademySettings, useUpdateAcademySettings } from "../../hooks/useAcademySettings";
+import {
+  useAcademySettings,
+  useUpdateAcademySettings,
+} from "../../hooks/useAcademySettings";
 
 const inputStyle = {
   backgroundColor: "var(--color-grey-50)",
@@ -15,7 +18,8 @@ const Settings = () => {
   const tenantId = profile?.tenant_id;
 
   const { data: tenant, isLoading } = useAcademySettings(tenantId);
-  const { updateSettings, isLoading: isSaving } = useUpdateAcademySettings(tenantId);
+  const { updateSettings, isLoading: isSaving } =
+    useUpdateAcademySettings(tenantId);
 
   const {
     register,
@@ -25,12 +29,12 @@ const Settings = () => {
     formState: { errors },
   } = useForm();
 
-  // Pre-fill the form once tenant data arrives
   useEffect(() => {
     if (tenant) {
       reset({
         academyName: tenant.academy_name ?? "",
         logoUrl: tenant.logo_url ?? "",
+        discount: Number(tenant.discount_percentage ?? 0),
       });
     }
   }, [tenant, reset]);
@@ -38,11 +42,17 @@ const Settings = () => {
   const logoPreview = watch("logoUrl");
 
   const onSubmit = (data) => {
-    updateSettings({ academyName: data.academyName, logoUrl: data.logoUrl });
+    updateSettings({
+      academyName: data.academyName,
+      logoUrl: data.logoUrl,
+      discount: Number(data.discount),
+    });
   };
 
   if (isLoading) {
-    return <div style={{ color: "var(--color-grey-700)" }}>Loading settings...</div>;
+    return (
+      <div style={{ color: "var(--color-grey-700)" }}>Loading settings...</div>
+    );
   }
 
   return (
@@ -64,7 +74,10 @@ const Settings = () => {
           maxWidth: "560px",
         }}
       >
-        <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="d-flex flex-column gap-3"
+        >
           <div className="d-flex align-items-center gap-3 mb-2">
             <div
               className="d-flex align-items-center justify-content-center rounded-3 overflow-hidden"
@@ -84,7 +97,9 @@ const Settings = () => {
                   onError={(e) => (e.currentTarget.style.display = "none")}
                 />
               ) : (
-                <FaBuilding style={{ color: "var(--color-grey-400)", fontSize: "1.5rem" }} />
+                <FaBuilding
+                  style={{ color: "var(--color-grey-400)", fontSize: "1.5rem" }}
+                />
               )}
             </div>
             <p className="m-0 small" style={{ color: "var(--color-grey-500)" }}>
@@ -93,7 +108,10 @@ const Settings = () => {
           </div>
 
           <div>
-            <label className="form-label fw-semibold" style={{ color: "var(--color-grey-700)" }}>
+            <label
+              className="form-label fw-semibold"
+              style={{ color: "var(--color-grey-700)" }}
+            >
               Academy Name
             </label>
             <input
@@ -101,15 +119,22 @@ const Settings = () => {
               className="form-control"
               style={inputStyle}
               placeholder="My Academy"
-              {...register("academyName", { required: "Academy name is required" })}
+              {...register("academyName", {
+                required: "Academy name is required",
+              })}
             />
             {errors.academyName && (
-              <span className="text-danger small">{errors.academyName.message}</span>
+              <span className="text-danger small">
+                {errors.academyName.message}
+              </span>
             )}
           </div>
 
           <div>
-            <label className="form-label fw-semibold" style={{ color: "var(--color-grey-700)" }}>
+            <label
+              className="form-label fw-semibold"
+              style={{ color: "var(--color-grey-700)" }}
+            >
               Logo URL
             </label>
             <input
@@ -119,6 +144,24 @@ const Settings = () => {
               placeholder="https://example.com/logo.png"
               {...register("logoUrl")}
             />
+          </div>
+          <div>
+            <label
+              className="form-label fw-semibold"
+              style={{ color: "var(--color-grey-700)" }}
+            >
+              Bulk Discount Percentage (%) for all courses
+            </label>
+            <input
+              type="number"
+              className="form-control"
+              style={inputStyle}
+              placeholder="20"
+              {...register("discount", { min: 0, max: 100 })}
+            />
+            <small className="text-muted">
+              Enter 0 to disable bulk discount.
+            </small>
           </div>
 
           <button

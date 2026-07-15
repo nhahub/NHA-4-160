@@ -11,7 +11,7 @@ export const getStoreDetails = async (tenantId) => {
 
   const { data: admin, error: adminError } = await supabase
     .from("users")
-    .select("name, email, phone")
+    .select("name, email, phone, tenants(discount_percentage)")
     .eq("tenant_id", tenantId)
     .eq("role", "admin")
     .single();

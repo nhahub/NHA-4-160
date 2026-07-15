@@ -4,17 +4,23 @@ import {
   FaWhatsapp,
   FaUserTie,
   FaGraduationCap,
+  FaTag,
 } from "react-icons/fa";
 import { useStoreDetails } from "../../hooks/useStoreDetails";
 
 const BuyCourses = () => {
   const { tenantId } = useParams();
-
   const { data, isLoading } = useStoreDetails(tenantId);
+  console.log(data);
 
-  const totalPrice = data?.courses
-    ? data.courses.reduce((sum, course) => sum + Number(course.price || 0), 0)
-    : 0;
+  const discount =
+    data?.tenant?.discount_percentage ||
+    data?.admin?.tenants?.discount_percentage ||
+    0;
+  const subTotal =
+    data?.courses?.reduce((sum, c) => sum + Number(c.price || 0), 0) || 0;
+  const discountAmount = subTotal * (discount / 100);
+  const finalTotal = subTotal - discountAmount;
 
   if (isLoading) {
     return (
@@ -40,6 +46,7 @@ const BuyCourses = () => {
         </p>
       </div>
 
+      {/* الجزء الخاص بعرض الكورسات (بدون خصم على كل كورس) */}
       <div className="col-12 col-lg-7">
         <div className="d-flex flex-column gap-3">
           {courses?.length === 0 ? (
@@ -95,7 +102,7 @@ const BuyCourses = () => {
                     className="fw-bold mb-0"
                     style={{ color: "var(--color-brand-600)" }}
                   >
-                    ${course.price}
+                    ${Number(course.price).toFixed(2)}
                   </h4>
                 </div>
               </div>
@@ -104,6 +111,7 @@ const BuyCourses = () => {
         </div>
       </div>
 
+      {/* الجزء الخاص بالفاتورة (التوتال والخصومات) */}
       <div className="col-12 col-lg-5">
         <div
           className="card border-0 shadow-sm sticky-top"
@@ -124,16 +132,82 @@ const BuyCourses = () => {
               Purchase Summary
             </h4>
 
-            <div className="d-flex justify-content-between align-items-center mb-4">
-              <span className="fs-5" style={{ color: "var(--color-grey-600)" }}>
-                Total Value:
-              </span>
-              <span
-                className="fs-2 fw-bold"
-                style={{ color: "var(--color-grey-900)" }}
-              >
-                ${totalPrice}
-              </span>
+            <div className="mb-4">
+              {/* رسالة تشجيعية جذابة لو في خصم */}
+              {discount > 0 && (
+                <div
+                  className="alert border-0 d-flex align-items-center gap-2 mb-4"
+                  style={{
+                    backgroundColor: "var(--color-brand-50)",
+                    color: "var(--color-brand-700)",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <FaTag size={20} />
+                  <span className="fw-bold">
+                    Bundle offer! Save {discount}% on the total price.
+                  </span>
+                </div>
+              )}
+
+              <div className="d-flex justify-content-between align-items-center mb-2">
+                <span style={{ color: "var(--color-grey-600)" }}>
+                  Total Courses Price:
+                </span>
+                <span
+                  className="fw-bold"
+                  style={{ color: "var(--color-grey-900)" }}
+                >
+                  ${subTotal.toFixed(2)}
+                </span>
+              </div>
+
+              {discount > 0 && (
+                <div
+                  className="d-flex justify-content-between align-items-center mb-3"
+                  style={{ color: "var(--color-brand-600)" }}
+                >
+                  <span className="fw-semibold">
+                    Discount Amount ({discount}%):
+                  </span>
+                  <span className="fw-bold">-${discountAmount.toFixed(2)}</span>
+                </div>
+              )}
+
+              <hr style={{ borderColor: "var(--color-grey-200)" }} />
+
+              {/* الشطب وإبراز السعر النهائي */}
+              <div className="d-flex justify-content-between align-items-end mt-3">
+                <span
+                  className="fs-5 fw-bold mb-1"
+                  style={{ color: "var(--color-grey-800)" }}
+                >
+                  Final Total:
+                </span>
+                <div className="text-end">
+                  {discount > 0 && (
+                    <span
+                      className="d-block text-muted text-decoration-line-through mb-1"
+                      style={{ fontSize: "1.1rem" }}
+                    >
+                      ${subTotal.toFixed(2)}
+                    </span>
+                  )}
+                  <span
+                    className="fw-bold"
+                    style={{
+                      fontSize: "2.5rem",
+                      lineHeight: "1",
+                      color:
+                        discount > 0
+                          ? "var(--color-brand-600)"
+                          : "var(--color-grey-900)",
+                    }}
+                  >
+                    ${finalTotal.toFixed(2)}
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div
@@ -153,9 +227,14 @@ const BuyCourses = () => {
                 className="small mb-4"
                 style={{ color: "var(--color-grey-600)", lineHeight: "1.6" }}
               >
-                To purchase any of these courses, please contact the instructor
-                directly. They will set up your student account and grant you
-                instant access.
+                To purchase{" "}
+                <strong style={{ color: "var(--color-grey-900)" }}>
+                  {discount > 0
+                    ? "the complete bundle"
+                    : "any of these courses"}
+                </strong>
+                , please contact the instructor directly. They will set up your
+                student account and grant you instant access.
               </p>
 
               <div className="d-flex flex-column gap-3">
@@ -244,14 +323,22 @@ const BuyCourses = () => {
                 href={`https://wa.me/${admin.phone.replace(/[^0-9]/g, "")}`}
                 target="_blank"
                 rel="noreferrer"
-                className="btn w-100 fw-bold mt-4 d-flex justify-content-center align-items-center gap-2"
+                className="btn w-100 fw-bold mt-4 d-flex justify-content-center align-items-center gap-2 shadow-sm"
                 style={{
                   backgroundColor: "#25D366",
                   color: "#fff",
-                  padding: "12px",
+                  padding: "14px",
+                  fontSize: "1.1rem",
+                  transition: "transform 0.2s ease-in-out",
                 }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.02)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
               >
-                <FaWhatsapp size={20} /> Contact via WhatsApp
+                <FaWhatsapp size={22} /> Contact via WhatsApp
               </a>
             )}
           </div>
