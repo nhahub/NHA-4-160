@@ -180,6 +180,7 @@ const CourseFormModal = ({ isOpen, onClose, tenantId, course }) => {
               }}
             />
           )}
+          <input type="hidden" {...register("thumbnail_url")} />
         </div>
 
         <div className="row g-3">

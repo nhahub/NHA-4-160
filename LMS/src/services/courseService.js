@@ -32,14 +32,6 @@ export const getCourseCurriculum = async (courseId) => {
   return data;
 };
 
-/**
- * NOTE for the team: small read-only addition. Returns ALL of the
- * teacher's courses (draft + published), unlike getPublishedCourses
- * which is for the public storefront. The Students & Settings screens
- * need this to populate the "enroll student in course" dropdown — a
- * teacher should be able to enroll a student even in a course that
- * isn't published yet.
- */
 export const getTeacherCourses = async (tenantId) => {
   const { data, error } = await supabase
     .from("courses")
@@ -51,15 +43,13 @@ export const getTeacherCourses = async (tenantId) => {
   return data;
 };
 
-/**
- * Creates a new course (starts as "draft" unless a status is given).
- */
 export const createCourse = async ({
   tenantId,
   title,
   description,
   price,
   status = "draft",
+  thumbnail_url,
 }) => {
   const { data, error } = await supabase
     .from("courses")
@@ -70,6 +60,7 @@ export const createCourse = async ({
         description,
         price,
         status,
+        thumbnail_url,
       },
     ])
     .select()
@@ -79,11 +70,6 @@ export const createCourse = async ({
   return data;
 };
 
-/**
- * Updates a course's own fields (title, description, price, image,
- * published/draft status). Curriculum (sections/lessons) is handled
- * separately in curriculumService.
- */
 export const updateCourse = async (courseId, updates) => {
   const { data, error } = await supabase
     .from("courses")
@@ -96,10 +82,6 @@ export const updateCourse = async (courseId, updates) => {
   return data;
 };
 
-/**
- * Deletes a course. Assumes sections/lessons/enrollments cascade via
- * FK constraints on the database side.
- */
 export const deleteCourse = async (courseId) => {
   const { error } = await supabase.from("courses").delete().eq("id", courseId);
   if (error) throw error;
