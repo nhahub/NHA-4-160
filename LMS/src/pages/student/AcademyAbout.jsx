@@ -11,7 +11,9 @@ const AcademyAbout = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("users")
-        .select("name, email, phone, tenants(academy_name)")
+        .select(
+          "name, email, phone, tenants!users_tenant_id_fkey(academy_name)",
+        )
         .eq("tenant_id", tenantId)
         .eq("role", "admin")
         .single();

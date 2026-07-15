@@ -1,84 +1,60 @@
-import { Outlet, NavLink, Navigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import { FaMoon, FaSun, FaSignOutAlt } from "react-icons/fa";
 import { useLogout } from "../hooks/useLogout";
-import { useTeacherProfile } from "../hooks/useTeacherProfile";
+import SuperAdminSidebar from "../components/SuperAdminSidebar";
+import { useTheme } from "../hooks/useTheme";
 
 const SuperAdminLayout = () => {
-  const { logout, isLoading: isLoggingOut } = useLogout();
-  const { data: profile, isLoading: isProfileLoading } = useTeacherProfile();
-
-  if (isProfileLoading) {
-    return (
-      <div style={{ color: "var(--color-grey-900)", padding: "20px" }}>
-        Loading...
-      </div>
-    );
-  }
-
-  if (!profile || profile.role !== "super-admin") {
-    return <Navigate to="/login" replace />;
-  }
-
-  const navLinkStyle = ({ isActive }) => ({
-    display: "block",
-    padding: "12px 16px",
-    borderRadius: "8px",
-    textDecoration: "none",
-    fontWeight: "600",
-    color: isActive ? "var(--color-blue-text)" : "var(--color-grey-700)",
-    backgroundColor: isActive ? "var(--color-brand-600)" : "transparent",
-    marginBottom: "10px",
-    transition: "all 0.2s ease",
-  });
+  const { logout, isLoading } = useLogout("/");
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <div
-      className="d-flex vh-100"
-      style={{ backgroundColor: "var(--color-grey-50)" }}
+      className="d-flex"
+      style={{ minHeight: "100vh", backgroundColor: "var(--color-grey-50)" }}
     >
-      <nav
-        className="d-flex flex-column p-4"
-        style={{
-          width: "250px",
-          backgroundColor: "var(--color-grey-0)",
-          borderRight: "1px solid var(--color-grey-200)",
-          boxShadow: "var(--shadow-sm)",
-        }}
-      >
-        <h3 className="fw-bold mb-5" style={{ color: "var(--color-grey-900)" }}>
-          Super Admin
-        </h3>
+      <SuperAdminSidebar />
 
-        <div className="flex-grow-1">
-          <NavLink to="/super-admin" end style={navLinkStyle}>
-            Dashboard
-          </NavLink>
-          <NavLink to="/super-admin/tenants" style={navLinkStyle}>
-            Academies
-          </NavLink>
-          <NavLink to="/super-admin/settings" style={navLinkStyle}>
-            Settings
-          </NavLink>
-        </div>
-
-        <button
-          onClick={logout}
-          disabled={isLoggingOut}
-          className="btn fw-bold w-100 mt-auto"
+      <div className="flex-grow-1 d-flex flex-column" style={{ minWidth: 0 }}>
+        <div
+          className="d-flex justify-content-end align-items-center px-4"
           style={{
-            backgroundColor: "var(--color-grey-200)",
-            color: "var(--color-grey-800)",
-            border: "1px solid var(--color-grey-300)",
-            padding: "10px",
-            borderRadius: "8px",
+            height: "72px",
+            borderBottom: "1px solid var(--color-grey-200)",
+            backgroundColor: "var(--color-grey-0)",
           }}
         >
-          {isLoggingOut ? "Logging out..." : "Log Out"}
-        </button>
-      </nav>
+          <div className="d-flex align-items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              className="btn border-0 d-flex align-items-center justify-content-center"
+              style={{ color: "var(--color-grey-600)" }}
+              title="Toggle Theme"
+            >
+              {theme === "dark" ? <FaSun size={20} /> : <FaMoon size={20} />}
+            </button>
 
-      <main className="flex-grow-1 p-4 overflow-auto">
-        <Outlet />
-      </main>
+            <button
+              className="btn btn-sm fw-semibold d-flex align-items-center gap-2"
+              onClick={logout}
+              disabled={isLoading}
+              style={{
+                color: "var(--color-grey-600)",
+                border: "1px solid var(--color-grey-300)",
+                backgroundColor: "transparent",
+                padding: "6px 14px",
+              }}
+            >
+              <FaSignOutAlt size={16} />
+              {isLoading ? "Logging out..." : "Logout"}
+            </button>
+          </div>
+        </div>
+
+        <main className="p-4" style={{ flexGrow: 1 }}>
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 };

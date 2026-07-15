@@ -20,10 +20,11 @@ import CoursePlayer from "./pages/student/CoursePlayer";
 import BuyCourses from "./pages/student/BuyCourses";
 import AcademyAbout from "./pages/student/AcademyAbout";
 import MyCourses from "./pages/student/MyCourses";
-
-const AdminStats = () => <div>System Stats Content</div>;
-const AdminTenants = () => <div>Manage Tenants Content</div>;
-const AdminSettings = () => <div>Admin Settings Content</div>;
+import AdminPlans from "./pages/superAdmin/AdminPlans";
+import AdminTenants from "./pages/superAdmin/AdminTenants";
+import AdminStats from "./pages/superAdmin/AdminStats";
+import AdminUsers from "./pages/superAdmin/AdminUsers";
+import AdminSettings from "./pages/superAdmin/AdminSettings";
 
 const NotFound = () => <div>404 Not Found</div>;
 
@@ -41,6 +42,8 @@ function App() {
           <Route path="/super-admin" element={<SuperAdminLayout />}>
             <Route index element={<AdminStats />} />
             <Route path="tenants" element={<AdminTenants />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="plans" element={<AdminPlans />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>
 

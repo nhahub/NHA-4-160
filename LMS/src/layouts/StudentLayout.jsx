@@ -143,24 +143,6 @@ const StudentLayout = () => {
               </NavLink>
             )}
 
-            <NavLink
-              to={`/${tenantId}/about`}
-              className="text-decoration-none"
-              style={({ isActive }) => ({
-                color: isActive
-                  ? "var(--color-brand-600)"
-                  : "var(--color-grey-700)",
-                fontWeight: isActive ? "700" : "500",
-                borderBottom: isActive
-                  ? "2px solid var(--color-brand-600)"
-                  : "none",
-                paddingBottom: isActive ? "2px" : "0",
-                transition: "all 0.2s",
-              })}
-            >
-              About
-            </NavLink>
-
             {isStudentLoggedIn && (
               <NavLink
                 to={`/${tenantId}/my-courses`}
@@ -180,6 +162,23 @@ const StudentLayout = () => {
                 My Learning
               </NavLink>
             )}
+            <NavLink
+              to={`/${tenantId}/about`}
+              className="text-decoration-none"
+              style={({ isActive }) => ({
+                color: isActive
+                  ? "var(--color-brand-600)"
+                  : "var(--color-grey-700)",
+                fontWeight: isActive ? "700" : "500",
+                borderBottom: isActive
+                  ? "2px solid var(--color-brand-600)"
+                  : "none",
+                paddingBottom: isActive ? "2px" : "0",
+                transition: "all 0.2s",
+              })}
+            >
+              About
+            </NavLink>
 
             {!isStudentLoggedIn && (
               <NavLink

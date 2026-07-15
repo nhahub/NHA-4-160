@@ -26,7 +26,7 @@ export const getCurrentUser = async () => {
 
   const { data, error } = await supabase
     .from("users")
-    .select("*, tenants(academy_name)")
+    .select("*, tenants!users_tenant_id_fkey(academy_name)")
     .eq("id", user.id)
     .single();
 
