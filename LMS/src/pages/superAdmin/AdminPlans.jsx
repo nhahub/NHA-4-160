@@ -7,6 +7,7 @@ import {
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
+import { Placeholder } from "react-bootstrap";
 import { usePlansPaginated, useManagePlans } from "../../hooks/useSuperAdmin";
 import Modal from "../../components/Modal";
 
@@ -169,14 +170,21 @@ const PlanModal = ({ isOpen, onClose, plan }) => {
         <button
           type="submit"
           disabled={isPending}
-          className="btn w-100 fw-bold mt-2"
+          className="btn w-100 fw-bold mt-2 d-flex align-items-center justify-content-center"
           style={{
             backgroundColor: "var(--color-brand-600)",
             color: "var(--color-blue-text)",
             padding: "10px",
           }}
         >
-          {isPending ? "Saving..." : "Save Plan"}
+          {isPending ? (
+            <>
+              <span className="spinner-border spinner-border-sm me-2"></span>
+              Saving...
+            </>
+          ) : (
+            "Save Plan"
+          )}
         </button>
       </form>
     </Modal>
@@ -205,10 +213,94 @@ const AdminPlans = () => {
     setIsModalOpen(true);
   };
 
-  if (isLoading)
+  if (isLoading) {
     return (
-      <div style={{ color: "var(--color-grey-700)" }}>Loading plans...</div>
+      <div>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <Placeholder as="h2" animation="glow" className="m-0 w-25">
+            <Placeholder
+              xs={12}
+              className="rounded-3"
+              style={{
+                height: "32px",
+                backgroundColor: "var(--color-grey-300)",
+              }}
+            />
+          </Placeholder>
+          <Placeholder.Button
+            xs={2}
+            className="border-0 rounded-3"
+            style={{
+              height: "44px",
+              backgroundColor: "var(--color-brand-600)",
+            }}
+          />
+        </div>
+        <div
+          className="rounded-3 overflow-hidden"
+          style={{
+            backgroundColor: "var(--color-grey-0)",
+            border: "1px solid var(--color-grey-200)",
+          }}
+        >
+          <table className="table m-0 align-middle">
+            <thead>
+              <tr style={{ backgroundColor: "var(--color-grey-50)" }}>
+                {["Name", "Price", "Duration", "Limit", "Features", ""].map(
+                  (th, i) => (
+                    <th
+                      key={i}
+                      className="p-3 border-0"
+                      style={{ color: "var(--color-grey-600)" }}
+                    >
+                      {th}
+                    </th>
+                  ),
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              {[1, 2, 3, 4, 5].map((row) => (
+                <tr
+                  key={row}
+                  style={{
+                    borderTop: "1px solid var(--color-grey-200)",
+                    backgroundColor: "var(--color-grey-0)",
+                  }}
+                >
+                  {[1, 2, 3, 4, 5].map((col) => (
+                    <td key={col} className="p-3 border-0">
+                      <Placeholder animation="glow">
+                        <Placeholder
+                          xs={8}
+                          className="rounded-2"
+                          style={{ backgroundColor: "var(--color-grey-200)" }}
+                        />
+                      </Placeholder>
+                    </td>
+                  ))}
+                  <td className="p-3 text-end border-0">
+                    <Placeholder animation="glow">
+                      <Placeholder.Button
+                        xs={4}
+                        className="border-0 me-2"
+                        style={{ backgroundColor: "var(--color-grey-200)" }}
+                      />
+                      <Placeholder.Button
+                        xs={4}
+                        className="border-0"
+                        style={{ backgroundColor: "var(--color-grey-200)" }}
+                      />
+                    </Placeholder>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     );
+  }
 
   return (
     <div>
@@ -341,9 +433,7 @@ const AdminPlans = () => {
                 </td>
                 <td
                   className="p-3 border-0"
-                  style={{
-                    backgroundColor: "var(--color-grey-0)",
-                  }}
+                  style={{ backgroundColor: "var(--color-grey-0)" }}
                 >
                   <div className="d-flex flex-wrap gap-1">
                     {plan.features?.map((f, i) => (

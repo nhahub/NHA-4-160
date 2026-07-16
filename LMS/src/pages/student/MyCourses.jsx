@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import { Placeholder } from "react-bootstrap";
 import { useMyCourses } from "../../hooks/useMyCourses";
 import { FaPlayCircle } from "react-icons/fa";
 
@@ -6,10 +7,103 @@ const MyCourses = () => {
   const { tenantId } = useParams();
   const { data: enrollments, isLoading } = useMyCourses(tenantId);
 
-  if (isLoading)
+  if (isLoading) {
     return (
-      <div className="py-5 text-center fw-bold">Loading your courses...</div>
+      <div>
+        <div className="mb-5">
+          <Placeholder as="h2" animation="glow" className="mb-2">
+            <Placeholder
+              xs={3}
+              style={{
+                height: "32px",
+                backgroundColor: "var(--color-grey-300)",
+              }}
+            />
+          </Placeholder>
+          <Placeholder as="p" animation="glow">
+            <Placeholder
+              xs={4}
+              style={{ backgroundColor: "var(--color-grey-200)" }}
+            />
+          </Placeholder>
+        </div>
+        <div className="row g-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="col-12 col-md-6 col-lg-4">
+              <div
+                className="card h-100 shadow-sm border-0"
+                style={{ backgroundColor: "var(--color-grey-0)" }}
+              >
+                <Placeholder animation="glow">
+                  <Placeholder
+                    className="w-100 card-img-top"
+                    style={{
+                      height: "180px",
+                      backgroundColor: "var(--color-grey-200)",
+                    }}
+                  />
+                </Placeholder>
+                <div className="card-body d-flex flex-column">
+                  <Placeholder animation="glow" className="mb-2">
+                    <Placeholder
+                      xs={3}
+                      className="rounded-pill"
+                      style={{
+                        height: "24px",
+                        backgroundColor: "var(--color-grey-200)",
+                      }}
+                    />
+                  </Placeholder>
+                  <Placeholder as="h5" animation="glow" className="mb-3">
+                    <Placeholder
+                      xs={8}
+                      style={{
+                        height: "24px",
+                        backgroundColor: "var(--color-grey-300)",
+                      }}
+                    />
+                  </Placeholder>
+                  <div className="mt-auto pt-3">
+                    <Placeholder
+                      animation="glow"
+                      className="d-flex justify-content-between mb-1"
+                    >
+                      <Placeholder
+                        xs={3}
+                        style={{ backgroundColor: "var(--color-grey-200)" }}
+                      />
+                      <Placeholder
+                        xs={2}
+                        style={{ backgroundColor: "var(--color-grey-300)" }}
+                      />
+                    </Placeholder>
+                    <Placeholder animation="glow" className="mb-3">
+                      <Placeholder
+                        xs={12}
+                        style={{
+                          height: "6px",
+                          backgroundColor: "var(--color-grey-200)",
+                        }}
+                      />
+                    </Placeholder>
+                    <Placeholder.Button
+                      variant="secondary"
+                      className="w-100 border-0"
+                      style={{
+                        height: "38px",
+                        backgroundColor: "var(--color-grey-200)",
+                        cursor: "default",
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     );
+  }
 
   return (
     <div>

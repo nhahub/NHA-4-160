@@ -1,5 +1,14 @@
 import { Link } from "react-router-dom";
-import { FaUserGraduate, FaBook, FaBuilding, FaPlus, FaBookOpen, FaCog, FaArrowRight } from "react-icons/fa";
+import { Placeholder } from "react-bootstrap";
+import {
+  FaUserGraduate,
+  FaBook,
+  FaBuilding,
+  FaPlus,
+  FaBookOpen,
+  FaCog,
+  FaArrowRight,
+} from "react-icons/fa";
 import { useTeacherProfile } from "../../hooks/useTeacherProfile";
 import { useTeacherStats } from "../../hooks/useTeacherStats";
 import { useStudents } from "../../hooks/useStudents";
@@ -27,13 +36,30 @@ const StatCard = ({ icon, label, value, isLoading }) => (
       >
         {icon}
       </div>
-      <div>
+      <div className="flex-grow-1">
         <p className="mb-1" style={{ color: "var(--color-grey-500)" }}>
           {label}
         </p>
-        <h3 className="fw-bold m-0" style={{ color: "var(--color-grey-900)" }}>
-          {isLoading ? "..." : value}
-        </h3>
+        {isLoading ? (
+          <Placeholder animation="glow" className="m-0">
+            <Placeholder
+              xs={8}
+              className="rounded-2"
+              style={{
+                height: "28px",
+                minWidth: "60px",
+                backgroundColor: "var(--color-grey-300)",
+              }}
+            />
+          </Placeholder>
+        ) : (
+          <h3
+            className="fw-bold m-0"
+            style={{ color: "var(--color-grey-900)" }}
+          >
+            {value}
+          </h3>
+        )}
       </div>
     </div>
   </div>
@@ -61,7 +87,9 @@ const QuickAction = ({ to, icon, title, subtitle }) => (
       <div className="fw-semibold" style={{ color: "var(--color-grey-900)" }}>
         {title}
       </div>
-      <div style={{ color: "var(--color-grey-500)", fontSize: "0.85rem" }}>{subtitle}</div>
+      <div style={{ color: "var(--color-grey-500)", fontSize: "0.85rem" }}>
+        {subtitle}
+      </div>
     </div>
     <FaArrowRight style={{ color: "var(--color-grey-400)" }} />
   </Link>
@@ -80,12 +108,206 @@ const Dashboard = () => {
   const tenantId = profile?.tenant_id;
 
   const { data: stats, isLoading: isStatsLoading } = useTeacherStats(tenantId);
-  const { data: students, isLoading: isStudentsLoading } = useStudents(tenantId);
+  const { data: students, isLoading: isStudentsLoading } =
+    useStudents(tenantId);
 
   const recentStudents = students?.slice(0, 5) ?? [];
 
   if (isProfileLoading) {
-    return <div style={{ color: "var(--color-grey-700)" }}>Loading...</div>;
+    return (
+      <div>
+        <div className="mb-4">
+          <Placeholder as="h2" animation="glow" className="mb-2">
+            <Placeholder
+              xs={6}
+              md={3}
+              className="rounded-3"
+              style={{
+                height: "32px",
+                backgroundColor: "var(--color-grey-300)",
+              }}
+            />
+          </Placeholder>
+          <Placeholder as="p" animation="glow">
+            <Placeholder
+              xs={8}
+              md={4}
+              className="rounded-2"
+              style={{ backgroundColor: "var(--color-grey-200)" }}
+            />
+          </Placeholder>
+        </div>
+
+        <div className="row g-3 mb-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="col-12 col-md-4">
+              <div
+                className="p-4 rounded-3 h-100 d-flex align-items-center gap-3"
+                style={{
+                  backgroundColor: "var(--color-grey-0)",
+                  border: "1px solid var(--color-grey-200)",
+                }}
+              >
+                <Placeholder animation="glow" className="flex-shrink-0">
+                  <Placeholder
+                    className="rounded-3"
+                    style={{
+                      width: "52px",
+                      height: "52px",
+                      backgroundColor: "var(--color-grey-200)",
+                    }}
+                  />
+                </Placeholder>
+                <div className="w-100">
+                  <Placeholder animation="glow" className="mb-1">
+                    <Placeholder
+                      xs={6}
+                      className="rounded-2"
+                      style={{ backgroundColor: "var(--color-grey-200)" }}
+                    />
+                  </Placeholder>
+                  <Placeholder animation="glow">
+                    <Placeholder
+                      xs={4}
+                      className="rounded-2"
+                      style={{
+                        height: "28px",
+                        backgroundColor: "var(--color-grey-300)",
+                      }}
+                    />
+                  </Placeholder>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="row g-3">
+          <div className="col-12 col-lg-4">
+            <div
+              className="p-4 rounded-3 h-100"
+              style={{
+                backgroundColor: "var(--color-grey-0)",
+                border: "1px solid var(--color-grey-200)",
+              }}
+            >
+              <Placeholder as="h5" animation="glow" className="mb-3">
+                <Placeholder
+                  xs={5}
+                  className="rounded-2"
+                  style={{
+                    height: "24px",
+                    backgroundColor: "var(--color-grey-300)",
+                  }}
+                />
+              </Placeholder>
+              <div className="d-flex flex-column gap-2">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="d-flex align-items-center gap-3 p-3 rounded-3"
+                    style={{ border: "1px solid var(--color-grey-100)" }}
+                  >
+                    <Placeholder animation="glow" className="flex-shrink-0">
+                      <Placeholder
+                        className="rounded-3"
+                        style={{
+                          width: "42px",
+                          height: "42px",
+                          backgroundColor: "var(--color-grey-200)",
+                        }}
+                      />
+                    </Placeholder>
+                    <div className="w-100">
+                      <Placeholder animation="glow" className="mb-1">
+                        <Placeholder
+                          xs={7}
+                          className="rounded-2"
+                          style={{ backgroundColor: "var(--color-grey-300)" }}
+                        />
+                      </Placeholder>
+                      <Placeholder animation="glow">
+                        <Placeholder
+                          xs={9}
+                          className="rounded-2"
+                          style={{ backgroundColor: "var(--color-grey-200)" }}
+                        />
+                      </Placeholder>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="col-12 col-lg-8">
+            <div
+              className="p-4 rounded-3 h-100"
+              style={{
+                backgroundColor: "var(--color-grey-0)",
+                border: "1px solid var(--color-grey-200)",
+              }}
+            >
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <Placeholder as="h5" animation="glow" className="m-0 w-25">
+                  <Placeholder
+                    xs={12}
+                    className="rounded-2"
+                    style={{
+                      height: "24px",
+                      backgroundColor: "var(--color-grey-300)",
+                    }}
+                  />
+                </Placeholder>
+                <Placeholder animation="glow" className="w-25 text-end">
+                  <Placeholder
+                    xs={8}
+                    className="rounded-2"
+                    style={{ backgroundColor: "var(--color-grey-200)" }}
+                  />
+                </Placeholder>
+              </div>
+              <div className="d-flex flex-column gap-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div
+                    key={i}
+                    className="d-flex align-items-center gap-3 p-2 rounded-3"
+                    style={{ borderBottom: "1px solid var(--color-grey-100)" }}
+                  >
+                    <Placeholder animation="glow" className="flex-shrink-0">
+                      <Placeholder
+                        className="rounded-circle"
+                        style={{
+                          width: "38px",
+                          height: "38px",
+                          backgroundColor: "var(--color-grey-200)",
+                        }}
+                      />
+                    </Placeholder>
+                    <div className="w-100">
+                      <Placeholder animation="glow" className="mb-1">
+                        <Placeholder
+                          xs={3}
+                          className="rounded-2"
+                          style={{ backgroundColor: "var(--color-grey-300)" }}
+                        />
+                      </Placeholder>
+                      <Placeholder animation="glow">
+                        <Placeholder
+                          xs={5}
+                          className="rounded-2"
+                          style={{ backgroundColor: "var(--color-grey-200)" }}
+                        />
+                      </Placeholder>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -135,7 +357,10 @@ const Dashboard = () => {
               boxShadow: "var(--shadow-sm)",
             }}
           >
-            <h5 className="fw-bold mb-3" style={{ color: "var(--color-grey-900)" }}>
+            <h5
+              className="fw-bold mb-3"
+              style={{ color: "var(--color-grey-900)" }}
+            >
               Quick Actions
             </h5>
             <div className="d-flex flex-column gap-2">
@@ -172,7 +397,10 @@ const Dashboard = () => {
             }}
           >
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <h5 className="fw-bold m-0" style={{ color: "var(--color-grey-900)" }}>
+              <h5
+                className="fw-bold m-0"
+                style={{ color: "var(--color-grey-900)" }}
+              >
                 Recently Added Students
               </h5>
               <Link
@@ -185,11 +413,52 @@ const Dashboard = () => {
             </div>
 
             {isStudentsLoading ? (
-              <p style={{ color: "var(--color-grey-500)" }}>Loading...</p>
+              <div className="d-flex flex-column gap-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div
+                    key={i}
+                    className="d-flex align-items-center gap-3 p-2 rounded-3"
+                    style={{ borderBottom: "1px solid var(--color-grey-100)" }}
+                  >
+                    <Placeholder animation="glow" className="flex-shrink-0">
+                      <Placeholder
+                        className="rounded-circle"
+                        style={{
+                          width: "38px",
+                          height: "38px",
+                          backgroundColor: "var(--color-grey-200)",
+                        }}
+                      />
+                    </Placeholder>
+                    <div className="w-100">
+                      <Placeholder animation="glow" className="mb-1">
+                        <Placeholder
+                          xs={4}
+                          className="rounded-2"
+                          style={{ backgroundColor: "var(--color-grey-300)" }}
+                        />
+                      </Placeholder>
+                      <Placeholder animation="glow">
+                        <Placeholder
+                          xs={6}
+                          className="rounded-2"
+                          style={{ backgroundColor: "var(--color-grey-200)" }}
+                        />
+                      </Placeholder>
+                    </div>
+                  </div>
+                ))}
+              </div>
             ) : recentStudents.length === 0 ? (
               <div className="text-center py-4">
-                <FaUserGraduate size={28} style={{ color: "var(--color-grey-400)" }} />
-                <p className="mt-3 mb-0" style={{ color: "var(--color-grey-500)" }}>
+                <FaUserGraduate
+                  size={28}
+                  style={{ color: "var(--color-grey-400)" }}
+                />
+                <p
+                  className="mt-3 mb-0"
+                  style={{ color: "var(--color-grey-500)" }}
+                >
                   No students yet. Add your first student to get started.
                 </p>
               </div>
@@ -214,10 +483,18 @@ const Dashboard = () => {
                       {initialsOf(student.name)}
                     </div>
                     <div className="flex-grow-1">
-                      <div className="fw-semibold" style={{ color: "var(--color-grey-900)" }}>
+                      <div
+                        className="fw-semibold"
+                        style={{ color: "var(--color-grey-900)" }}
+                      >
                         {student.name}
                       </div>
-                      <div style={{ color: "var(--color-grey-500)", fontSize: "0.85rem" }}>
+                      <div
+                        style={{
+                          color: "var(--color-grey-500)",
+                          fontSize: "0.85rem",
+                        }}
+                      >
                         {student.email}
                       </div>
                     </div>

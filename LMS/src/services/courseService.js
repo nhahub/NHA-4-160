@@ -1,5 +1,27 @@
 import { supabase } from "../config/supabase";
 
+export const getTenantCategories = async (tenantId) => {
+  const { data, error } = await supabase
+    .from("categories")
+    .select("*")
+    .eq("tenant_id", tenantId)
+    .order("created_at", { ascending: true });
+
+  if (error) throw error;
+  return data;
+};
+
+export const createCategory = async ({ tenantId, name }) => {
+  const { data, error } = await supabase
+    .from("categories")
+    .insert([{ tenant_id: tenantId, name }])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+};
+
 export const getPublishedCourses = async (tenantId) => {
   const { data, error } = await supabase
     .from("courses")
@@ -50,6 +72,7 @@ export const createCourse = async ({
   price,
   status = "draft",
   thumbnail_url,
+  category,
 }) => {
   const { data, error } = await supabase
     .from("courses")
@@ -61,6 +84,7 @@ export const createCourse = async ({
         price,
         status,
         thumbnail_url,
+        category,
       },
     ])
     .select()
@@ -86,4 +110,17 @@ export const deleteCourse = async (courseId) => {
   const { error } = await supabase.from("courses").delete().eq("id", courseId);
   if (error) throw error;
   return true;
+};
+
+export const checkEnrollment = async (courseId, studentId) => {
+  if (!studentId) return false;
+  const { data, error } = await supabase
+    .from("enrollments")
+    .select("id")
+    .eq("student_id", studentId)
+    .eq("course_id", courseId)
+    .maybeSingle();
+
+  if (error) throw error;
+  return !!data;
 };

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaTrash, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { Placeholder } from "react-bootstrap";
 import { useUsersPaginated, useManageUsers } from "../../hooks/useSuperAdmin";
 
 const AdminUsers = () => {
@@ -12,10 +13,79 @@ const AdminUsers = () => {
   const totalCount = data?.count || 0;
   const totalPages = Math.ceil(totalCount / limit);
 
-  if (isLoading)
+  if (isLoading) {
     return (
-      <div style={{ color: "var(--color-grey-700)" }}>Loading users...</div>
+      <div>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <Placeholder as="h2" animation="glow" className="m-0 w-25">
+            <Placeholder
+              xs={12}
+              className="rounded-3"
+              style={{
+                height: "32px",
+                backgroundColor: "var(--color-grey-300)",
+              }}
+            />
+          </Placeholder>
+        </div>
+        <div
+          className="rounded-3 overflow-hidden"
+          style={{
+            backgroundColor: "var(--color-grey-0)",
+            border: "1px solid var(--color-grey-200)",
+          }}
+        >
+          <table className="table m-0 align-middle">
+            <thead>
+              <tr style={{ backgroundColor: "var(--color-grey-50)" }}>
+                {["Name", "Email", "Role", "Academy", ""].map((th, i) => (
+                  <th
+                    key={i}
+                    className="p-3 border-0"
+                    style={{ color: "var(--color-grey-600)" }}
+                  >
+                    {th}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((row) => (
+                <tr
+                  key={row}
+                  style={{
+                    borderTop: "1px solid var(--color-grey-200)",
+                    backgroundColor: "var(--color-grey-0)",
+                  }}
+                >
+                  {[1, 2, 3, 4].map((col) => (
+                    <td key={col} className="p-3 border-0">
+                      <Placeholder animation="glow">
+                        <Placeholder
+                          xs={8}
+                          className="rounded-2"
+                          style={{ backgroundColor: "var(--color-grey-200)" }}
+                        />
+                      </Placeholder>
+                    </td>
+                  ))}
+                  <td className="p-3 text-end border-0">
+                    <Placeholder animation="glow">
+                      <Placeholder.Button
+                        xs={6}
+                        className="border-0"
+                        style={{ backgroundColor: "var(--color-grey-200)" }}
+                      />
+                    </Placeholder>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     );
+  }
 
   return (
     <div>

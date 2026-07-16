@@ -1,36 +1,120 @@
-import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../../config/supabase";
 import { FaEnvelope, FaPhone, FaBuilding } from "react-icons/fa";
+import { Placeholder } from "react-bootstrap";
+import { useAdminData } from "../../hooks/useAdminData";
 
 const AcademyAbout = () => {
-  const { tenantId } = useParams();
+  const { data: admin, isLoading } = useAdminData();
 
-  const { data: admin, isLoading } = useQuery({
-    queryKey: ["academyAdmin", tenantId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("users")
-        .select(
-          "name, email, phone, tenants!users_tenant_id_fkey(academy_name)",
-        )
-        .eq("tenant_id", tenantId)
-        .eq("role", "admin")
-        .single();
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  if (isLoading)
+  if (isLoading) {
     return (
-      <div
-        className="py-5 text-center fw-bold"
-        style={{ color: "var(--color-grey-600)" }}
-      >
-        Loading...
+      <div className="row justify-content-center">
+        <div className="col-12 col-md-8 col-lg-6 text-center">
+          <Placeholder animation="glow">
+            <Placeholder
+              className="rounded-circle mb-4"
+              style={{
+                width: "100px",
+                height: "100px",
+                backgroundColor: "var(--color-grey-200)",
+              }}
+            />
+          </Placeholder>
+
+          <Placeholder as="h1" animation="glow" className="mb-3">
+            <Placeholder
+              xs={6}
+              className="rounded-3"
+              style={{
+                height: "40px",
+                backgroundColor: "var(--color-grey-300)",
+              }}
+            />
+          </Placeholder>
+
+          <Placeholder as="p" animation="glow" className="fs-5 mb-5">
+            <Placeholder
+              xs={4}
+              className="rounded-3"
+              style={{ backgroundColor: "var(--color-grey-200)" }}
+            />
+          </Placeholder>
+
+          <div
+            className="card border-0 shadow-sm text-start"
+            style={{ backgroundColor: "var(--color-grey-0)" }}
+          >
+            <div className="card-body p-4">
+              <Placeholder
+                as="h5"
+                animation="glow"
+                className="border-bottom pb-3 mb-4"
+                style={{ borderColor: "var(--color-grey-200) !important" }}
+              >
+                <Placeholder
+                  xs={5}
+                  className="rounded-3"
+                  style={{
+                    height: "24px",
+                    backgroundColor: "var(--color-grey-300)",
+                  }}
+                />
+              </Placeholder>
+
+              <div className="d-flex align-items-center gap-3 mb-3">
+                <Placeholder animation="glow">
+                  <Placeholder
+                    className="rounded"
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      backgroundColor: "var(--color-grey-200)",
+                    }}
+                  />
+                </Placeholder>
+                <Placeholder as="div" animation="glow" className="w-100">
+                  <Placeholder
+                    xs={3}
+                    className="rounded-2 mb-1 d-block"
+                    style={{ backgroundColor: "var(--color-grey-200)" }}
+                  />
+                  <Placeholder
+                    xs={6}
+                    className="rounded-2"
+                    style={{ backgroundColor: "var(--color-grey-300)" }}
+                  />
+                </Placeholder>
+              </div>
+
+              <div className="d-flex align-items-center gap-3">
+                <Placeholder animation="glow">
+                  <Placeholder
+                    className="rounded"
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      backgroundColor: "var(--color-grey-200)",
+                    }}
+                  />
+                </Placeholder>
+                <Placeholder as="div" animation="glow" className="w-100">
+                  <Placeholder
+                    xs={3}
+                    className="rounded-2 mb-1 d-block"
+                    style={{ backgroundColor: "var(--color-grey-200)" }}
+                  />
+                  <Placeholder
+                    xs={5}
+                    className="rounded-2"
+                    style={{ backgroundColor: "var(--color-grey-300)" }}
+                  />
+                </Placeholder>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
+  }
 
   return (
     <div className="row justify-content-center">
@@ -51,7 +135,7 @@ const AcademyAbout = () => {
         </h1>
 
         <p className="fs-5 mb-5" style={{ color: "var(--color-grey-600)" }}>
-          Instructed by
+          Instructed by{" "}
           <span className="fw-bold" style={{ color: "var(--color-grey-900)" }}>
             {admin?.name}
           </span>

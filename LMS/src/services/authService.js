@@ -52,21 +52,17 @@ export const registerTeacher = async (formData) => {
   if (authError) throw authError;
 
   const userId = authData.user.id;
-
   const tenantId = academyName.toLowerCase().replace(/\s+/g, "-");
 
   const { error: tenantError } = await supabase.from("tenants").insert([
     {
       id: tenantId,
       academy_name: academyName,
-      admin_uid: userId,
       plan_id: planId,
     },
   ]);
 
-  if (tenantError) {
-    throw tenantError;
-  }
+  if (tenantError) throw tenantError;
 
   const { error: userError } = await supabase.from("users").insert([
     {
@@ -80,6 +76,13 @@ export const registerTeacher = async (formData) => {
   ]);
 
   if (userError) throw userError;
+
+  const { error: updateTenantError } = await supabase
+    .from("tenants")
+    .update({ admin_uid: userId })
+    .eq("id", tenantId);
+
+  if (updateTenantError) throw updateTenantError;
 
   return { success: true, tenantId };
 };

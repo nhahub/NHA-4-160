@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Placeholder } from "react-bootstrap";
 import { supabase } from "../../config/supabase";
 import { useUpdateProfile } from "../../hooks/useUpdateProfile";
 import { useUpdatePassword } from "../../hooks/useUpdatePassword";
@@ -53,8 +54,111 @@ const StudentProfile = () => {
     borderColor: "var(--color-grey-300)",
   };
 
-  if (!currentUser)
-    return <div className="py-5 text-center">Loading Profile...</div>;
+  if (!currentUser) {
+    return (
+      <div className="row justify-content-center">
+        <div className="col-12 col-md-8 col-lg-6">
+          <Placeholder as="h3" animation="glow" className="text-center mb-4">
+            <Placeholder
+              xs={5}
+              style={{
+                height: "32px",
+                backgroundColor: "var(--color-grey-300)",
+              }}
+            />
+          </Placeholder>
+
+          <div
+            className="card shadow-sm border-0 mb-4 p-4 p-md-5"
+            style={{ backgroundColor: "var(--color-grey-0)" }}
+          >
+            <Placeholder as="h5" animation="glow" className="mb-4">
+              <Placeholder
+                xs={4}
+                style={{
+                  height: "24px",
+                  backgroundColor: "var(--color-grey-300)",
+                }}
+              />
+            </Placeholder>
+            <div className="d-flex flex-column gap-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i}>
+                  <Placeholder
+                    as="label"
+                    animation="glow"
+                    className="w-100 mb-1"
+                  >
+                    <Placeholder
+                      xs={3}
+                      style={{ backgroundColor: "var(--color-grey-200)" }}
+                    />
+                  </Placeholder>
+                  <Placeholder animation="glow">
+                    <Placeholder
+                      className="w-100 form-control-lg"
+                      style={{
+                        backgroundColor: "var(--color-grey-100)",
+                        border: "none",
+                      }}
+                    />
+                  </Placeholder>
+                </div>
+              ))}
+              <Placeholder.Button
+                className="btn-lg mt-3 border-0 w-50"
+                style={{
+                  backgroundColor: "var(--color-grey-300)",
+                  cursor: "default",
+                }}
+              />
+            </div>
+          </div>
+
+          <div
+            className="card shadow-sm border-0 p-4 p-md-5"
+            style={{ backgroundColor: "var(--color-grey-0)" }}
+          >
+            <Placeholder as="h5" animation="glow" className="mb-4">
+              <Placeholder
+                xs={4}
+                style={{
+                  height: "24px",
+                  backgroundColor: "var(--color-grey-300)",
+                }}
+              />
+            </Placeholder>
+            <div className="d-flex flex-column gap-3">
+              <div>
+                <Placeholder as="label" animation="glow" className="w-100 mb-1">
+                  <Placeholder
+                    xs={3}
+                    style={{ backgroundColor: "var(--color-grey-200)" }}
+                  />
+                </Placeholder>
+                <Placeholder animation="glow">
+                  <Placeholder
+                    className="w-100 form-control-lg"
+                    style={{
+                      backgroundColor: "var(--color-grey-100)",
+                      border: "none",
+                    }}
+                  />
+                </Placeholder>
+              </div>
+              <Placeholder.Button
+                className="btn-lg mt-3 border-0 w-50"
+                style={{
+                  backgroundColor: "var(--color-grey-300)",
+                  cursor: "default",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="row justify-content-center">

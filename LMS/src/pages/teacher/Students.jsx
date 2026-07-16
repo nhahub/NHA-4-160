@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { Placeholder } from "react-bootstrap";
 import { FaPlus, FaUserGraduate, FaBookOpen } from "react-icons/fa";
 import { useTeacherProfile } from "../../hooks/useTeacherProfile";
 import { useStudents } from "../../hooks/useStudents";
@@ -250,7 +251,184 @@ const Students = () => {
 
   if (isStudentsLoading) {
     return (
-      <div style={{ color: "var(--color-grey-700)" }}>Loading students...</div>
+      <div>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <Placeholder as="div" animation="glow" className="w-50">
+            <Placeholder
+              as="h2"
+              xs={4}
+              md={2}
+              className="rounded-3 mb-2 d-block"
+              style={{
+                backgroundColor: "var(--color-grey-300)",
+                height: "32px",
+              }}
+            />
+            <Placeholder
+              as="p"
+              xs={6}
+              md={3}
+              className="rounded-2 m-0 d-block"
+              style={{
+                backgroundColor: "var(--color-grey-200)",
+                height: "20px",
+              }}
+            />
+          </Placeholder>
+          <Placeholder animation="glow">
+            <Placeholder.Button
+              className="border-0"
+              style={{
+                backgroundColor: "var(--color-grey-200)",
+                width: "140px",
+                height: "40px",
+                borderRadius: "8px",
+                cursor: "default",
+              }}
+            />
+          </Placeholder>
+        </div>
+
+        <div
+          className="rounded-3 overflow-hidden"
+          style={{
+            backgroundColor: "var(--color-grey-0)",
+            border: "1px solid var(--color-grey-200)",
+            boxShadow: "var(--shadow-sm)",
+          }}
+        >
+          <table className="table m-0 align-middle">
+            <thead>
+              <tr style={{ backgroundColor: "var(--color-grey-50)" }}>
+                <th className="p-3 border-0">
+                  <Placeholder animation="glow">
+                    <Placeholder
+                      xs={4}
+                      style={{
+                        backgroundColor: "var(--color-grey-300)",
+                        height: "20px",
+                      }}
+                    />
+                  </Placeholder>
+                </th>
+                <th className="p-3 border-0">
+                  <Placeholder animation="glow">
+                    <Placeholder
+                      xs={6}
+                      style={{
+                        backgroundColor: "var(--color-grey-300)",
+                        height: "20px",
+                      }}
+                    />
+                  </Placeholder>
+                </th>
+                <th className="p-3 border-0">
+                  <Placeholder animation="glow">
+                    <Placeholder
+                      xs={5}
+                      style={{
+                        backgroundColor: "var(--color-grey-300)",
+                        height: "20px",
+                      }}
+                    />
+                  </Placeholder>
+                </th>
+                <th className="p-3 border-0"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {[1, 2, 3, 4].map((i) => (
+                <tr
+                  key={i}
+                  style={{
+                    borderTop: "1px solid var(--color-grey-200)",
+                    backgroundColor: "var(--color-grey-0)",
+                  }}
+                >
+                  <td className="p-3 border-0">
+                    <Placeholder
+                      animation="glow"
+                      className="d-flex align-items-center gap-3"
+                    >
+                      <Placeholder
+                        className="rounded-circle flex-shrink-0"
+                        style={{
+                          width: "38px",
+                          height: "38px",
+                          backgroundColor: "var(--color-grey-200)",
+                        }}
+                      />
+                      <div className="flex-grow-1">
+                        <Placeholder
+                          xs={5}
+                          className="rounded-2 mb-1 d-block"
+                          style={{
+                            backgroundColor: "var(--color-grey-300)",
+                            height: "20px",
+                          }}
+                        />
+                        <Placeholder
+                          xs={4}
+                          className="rounded-2 d-block"
+                          style={{
+                            backgroundColor: "var(--color-grey-200)",
+                            height: "16px",
+                          }}
+                        />
+                      </div>
+                    </Placeholder>
+                  </td>
+                  <td className="p-3 border-0">
+                    <Placeholder animation="glow">
+                      <Placeholder
+                        xs={8}
+                        className="rounded-2"
+                        style={{
+                          backgroundColor: "var(--color-grey-200)",
+                          height: "20px",
+                        }}
+                      />
+                    </Placeholder>
+                  </td>
+                  <td className="p-3 border-0">
+                    <Placeholder animation="glow" className="d-flex gap-1">
+                      <Placeholder
+                        xs={3}
+                        className="rounded-pill"
+                        style={{
+                          height: "24px",
+                          backgroundColor: "var(--color-grey-200)",
+                        }}
+                      />
+                      <Placeholder
+                        xs={4}
+                        className="rounded-pill"
+                        style={{
+                          height: "24px",
+                          backgroundColor: "var(--color-grey-200)",
+                        }}
+                      />
+                    </Placeholder>
+                  </td>
+                  <td className="p-3 text-end border-0">
+                    <Placeholder animation="glow">
+                      <Placeholder.Button
+                        className="border-0 btn-sm ms-auto"
+                        style={{
+                          width: "130px",
+                          height: "32px",
+                          backgroundColor: "var(--color-grey-200)",
+                          cursor: "default",
+                        }}
+                      />
+                    </Placeholder>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     );
   }
 

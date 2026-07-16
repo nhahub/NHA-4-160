@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 export const useLogin = () => {
   const navigate = useNavigate();
 
-  const { mutate: login, isLoading } = useMutation({
+  const { mutate: login, isPending } = useMutation({
     mutationFn: ({ email, password }) => loginUser(email, password),
     onSuccess: (userData) => {
       if (userData.role === "super-admin") {
@@ -26,5 +26,5 @@ export const useLogin = () => {
     },
   });
 
-  return { login, isLoading };
+  return { login, isPending };
 };

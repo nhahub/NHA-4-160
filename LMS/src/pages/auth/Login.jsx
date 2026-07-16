@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useSearchParams } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Spinner } from "react-bootstrap";
 import { useLogin } from "../../hooks/useLogin";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { login, isLoading } = useLogin();
+  const { login, isPending } = useLogin();
 
   const [searchParams] = useSearchParams();
   const academy = searchParams.get("academy");
@@ -130,21 +131,32 @@ const Login = () => {
 
         <button
           type="submit"
-          disabled={isLoading}
-          className="btn btn-lg w-100 fw-bold shadow-sm mt-2"
+          disabled={isPending}
+          className="btn btn-lg w-100 fw-bold shadow-sm mt-2 d-flex justify-content-center align-items-center"
           style={{
             backgroundColor: "var(--color-brand-600)",
             color: "var(--color-blue-text)",
             padding: "12px",
             border: "none",
             transition: "opacity 0.3s ease",
-            opacity: isLoading ? "0.7" : "1",
-            cursor: isLoading ? "not-allowed" : "pointer",
+            cursor: isPending ? "not-allowed" : "pointer",
           }}
-          onMouseOver={(e) => !isLoading && (e.target.style.opacity = "0.9")}
-          onMouseOut={(e) => !isLoading && (e.target.style.opacity = "1")}
         >
-          {isLoading ? "Signing in..." : "Log In"}
+          {isPending ? (
+            <>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+                className="me-2"
+              />
+              Logging in...
+            </>
+          ) : (
+            "Log In"
+          )}
         </button>
       </form>
 
@@ -158,7 +170,7 @@ const Login = () => {
             className="text-decoration-none fw-bold ms-1"
             style={{ color: "var(--color-brand-600)", fontSize: "0.95rem" }}
           >
-            Start
+            Start Your academy
           </Link>
         </div>
       )}

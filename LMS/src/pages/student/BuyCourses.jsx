@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { Placeholder } from "react-bootstrap";
 import {
   FaEnvelope,
   FaWhatsapp,
@@ -11,7 +12,6 @@ import { useStoreDetails } from "../../hooks/useStoreDetails";
 const BuyCourses = () => {
   const { tenantId } = useParams();
   const { data, isLoading } = useStoreDetails(tenantId);
-  console.log(data);
 
   const discount =
     data?.tenant?.discount_percentage ||
@@ -24,11 +24,148 @@ const BuyCourses = () => {
 
   if (isLoading) {
     return (
-      <div
-        className="py-5 text-center fw-bold"
-        style={{ color: "var(--color-grey-600)" }}
-      >
-        Loading store details...
+      <div className="row justify-content-center g-5">
+        <div className="text-center mb-2">
+          <Placeholder as="h1" animation="glow" className="mb-2">
+            <Placeholder
+              xs={6}
+              md={4}
+              className="rounded-3"
+              style={{
+                height: "40px",
+                backgroundColor: "var(--color-grey-300)",
+              }}
+            />
+          </Placeholder>
+          <Placeholder as="p" animation="glow">
+            <Placeholder
+              xs={8}
+              md={5}
+              className="rounded-3"
+              style={{ backgroundColor: "var(--color-grey-200)" }}
+            />
+          </Placeholder>
+        </div>
+
+        <div className="col-12 col-lg-7">
+          <div className="d-flex flex-column gap-3">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="card border-0 shadow-sm d-flex flex-row align-items-center p-3"
+                style={{
+                  backgroundColor: "var(--color-grey-0)",
+                  borderRadius: "12px",
+                }}
+              >
+                <Placeholder animation="glow" className="d-none d-sm-block">
+                  <Placeholder
+                    className="rounded-3"
+                    style={{
+                      width: "120px",
+                      height: "80px",
+                      backgroundColor: "var(--color-grey-200)",
+                    }}
+                  />
+                </Placeholder>
+                <div className="ms-sm-4 flex-grow-1">
+                  <Placeholder as="h5" animation="glow" className="mb-2">
+                    <Placeholder
+                      xs={8}
+                      className="rounded-2"
+                      style={{ backgroundColor: "var(--color-grey-300)" }}
+                    />
+                  </Placeholder>
+                  <Placeholder animation="glow">
+                    <Placeholder
+                      xs={4}
+                      className="rounded-pill"
+                      style={{
+                        height: "24px",
+                        backgroundColor: "var(--color-grey-200)",
+                      }}
+                    />
+                  </Placeholder>
+                </div>
+                <div className="ms-3 text-end w-25">
+                  <Placeholder as="h4" animation="glow" className="mb-0">
+                    <Placeholder
+                      xs={8}
+                      className="rounded-2"
+                      style={{ backgroundColor: "var(--color-grey-300)" }}
+                    />
+                  </Placeholder>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="col-12 col-lg-5">
+          <div
+            className="card border-0 shadow-sm"
+            style={{
+              backgroundColor: "var(--color-grey-0)",
+              borderRadius: "16px",
+            }}
+          >
+            <div className="card-body p-4 p-md-5">
+              <Placeholder
+                as="h4"
+                animation="glow"
+                className="border-bottom pb-3 mb-4"
+                style={{ borderColor: "var(--color-grey-200)" }}
+              >
+                <Placeholder
+                  xs={8}
+                  className="rounded-2"
+                  style={{
+                    backgroundColor: "var(--color-grey-300)",
+                    height: "28px",
+                  }}
+                />
+              </Placeholder>
+              <Placeholder animation="glow" className="mb-2">
+                <div className="d-flex justify-content-between mb-3">
+                  <Placeholder
+                    xs={5}
+                    style={{ backgroundColor: "var(--color-grey-200)" }}
+                  />
+                  <Placeholder
+                    xs={3}
+                    style={{ backgroundColor: "var(--color-grey-300)" }}
+                  />
+                </div>
+                <hr style={{ borderColor: "var(--color-grey-200)" }} />
+                <div className="d-flex justify-content-between align-items-end mt-3 mb-4">
+                  <Placeholder
+                    xs={4}
+                    style={{
+                      height: "24px",
+                      backgroundColor: "var(--color-grey-200)",
+                    }}
+                  />
+                  <Placeholder
+                    xs={4}
+                    style={{
+                      height: "40px",
+                      backgroundColor: "var(--color-grey-300)",
+                    }}
+                  />
+                </div>
+              </Placeholder>
+              <Placeholder animation="glow">
+                <Placeholder
+                  className="w-100 rounded-3 mt-4"
+                  style={{
+                    height: "200px",
+                    backgroundColor: "var(--color-grey-100)",
+                  }}
+                />
+              </Placeholder>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -46,7 +183,6 @@ const BuyCourses = () => {
         </p>
       </div>
 
-      {/* الجزء الخاص بعرض الكورسات (بدون خصم على كل كورس) */}
       <div className="col-12 col-lg-7">
         <div className="d-flex flex-column gap-3">
           {courses?.length === 0 ? (
@@ -111,7 +247,6 @@ const BuyCourses = () => {
         </div>
       </div>
 
-      {/* الجزء الخاص بالفاتورة (التوتال والخصومات) */}
       <div className="col-12 col-lg-5">
         <div
           className="card border-0 shadow-sm sticky-top"
@@ -133,7 +268,6 @@ const BuyCourses = () => {
             </h4>
 
             <div className="mb-4">
-              {/* رسالة تشجيعية جذابة لو في خصم */}
               {discount > 0 && (
                 <div
                   className="alert border-0 d-flex align-items-center gap-2 mb-4"
@@ -176,7 +310,6 @@ const BuyCourses = () => {
 
               <hr style={{ borderColor: "var(--color-grey-200)" }} />
 
-              {/* الشطب وإبراز السعر النهائي */}
               <div className="d-flex justify-content-between align-items-end mt-3">
                 <span
                   className="fs-5 fw-bold mb-1"

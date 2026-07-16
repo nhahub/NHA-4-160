@@ -74,7 +74,7 @@ const LandingPage = () => {
 
             <Link
               to="/login"
-              className="btn fw-semibold me-3 d-none d-sm-block"
+              className="btn fw-semibold me-2"
               style={{ color: "var(--color-grey-700)" }}
             >
               Login
@@ -82,17 +82,16 @@ const LandingPage = () => {
 
             <Link
               to="/register"
-              className="btn shadow-sm"
+              className="btn shadow-sm px-3 px-md-4"
               style={brandButtonStyle}
             >
-              Start for Free
+              <span className="d-none d-sm-inline">Start for Free</span>
+              <span className="d-inline d-sm-none">Start</span>
             </Link>
           </div>
         </div>
-      </nav>
-
+      </nav>{" "}
       <main className="flex-grow-1">
-        {/* Hero Section */}
         <section className="container text-center py-5 mt-5">
           <div className="row justify-content-center">
             <div className="col-lg-8">
@@ -120,17 +119,17 @@ const LandingPage = () => {
                 business independently.
               </p>
 
-              <div className="d-flex justify-content-center gap-3 flex-wrap">
+              <div className="d-flex flex-column flex-sm-row justify-content-center gap-3">
                 <Link
                   to="/register"
-                  className="btn btn-lg shadow-md d-flex align-items-center gap-2"
+                  className="btn btn-lg shadow-md d-flex align-items-center justify-content-center gap-2 px-4"
                   style={brandButtonStyle}
                 >
                   <FaRocket /> Create Your Academy Now
                 </Link>
                 <a
                   href="#features"
-                  className="btn btn-lg"
+                  className="btn btn-lg px-4"
                   style={{
                     backgroundColor: "transparent",
                     color: "var(--color-grey-700)",
@@ -144,7 +143,6 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Features Section */}
         <section id="features" className="container py-5 mt-4">
           <div className="text-center mb-5">
             <h2 className="fw-bold" style={{ color: "var(--color-grey-900)" }}>
@@ -156,7 +154,7 @@ const LandingPage = () => {
           </div>
           <div className="row g-4">
             <div className="col-md-4">
-              <div className="card h-100 p-4 border" style={cardStyle}>
+              <div className="card h-100 p-4 " style={cardStyle}>
                 <div
                   className="mb-3 d-inline-flex align-items-center justify-content-center rounded-circle"
                   style={{
@@ -183,7 +181,7 @@ const LandingPage = () => {
             </div>
 
             <div className="col-md-4">
-              <div className="card h-100 p-4 border" style={cardStyle}>
+              <div className="card h-100 p-4 " style={cardStyle}>
                 <div
                   className="mb-3 d-inline-flex align-items-center justify-content-center rounded-circle"
                   style={{
@@ -210,7 +208,7 @@ const LandingPage = () => {
             </div>
 
             <div className="col-md-4">
-              <div className="card h-100 p-4 border" style={cardStyle}>
+              <div className="card h-100 p-4 " style={cardStyle}>
                 <div
                   className="mb-3 d-inline-flex align-items-center justify-content-center rounded-circle"
                   style={{
@@ -238,7 +236,6 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* How It Works Section */}
         <section
           className="py-5"
           style={{
@@ -343,7 +340,6 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Testimonials Section */}
         <section className="container py-5 mt-4">
           <div className="text-center mb-5">
             <h2 className="fw-bold" style={{ color: "var(--color-grey-900)" }}>
@@ -356,7 +352,7 @@ const LandingPage = () => {
 
           <div className="row g-4">
             <div className="col-md-6">
-              <div className="card h-100 p-4 border" style={cardStyle}>
+              <div className="card h-100 p-4 " style={cardStyle}>
                 <FaQuoteLeft
                   className="mb-3"
                   style={{ fontSize: "2rem", color: "var(--color-grey-300)" }}
@@ -404,7 +400,7 @@ const LandingPage = () => {
             </div>
 
             <div className="col-md-6">
-              <div className="card h-100 p-4 border" style={cardStyle}>
+              <div className="card h-100 p-4 " style={cardStyle}>
                 <FaQuoteLeft
                   className="mb-3"
                   style={{ fontSize: "2rem", color: "var(--color-grey-300)" }}
@@ -453,7 +449,6 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Bottom CTA Section */}
         <section
           className="py-5 mt-5"
           style={{ backgroundColor: "var(--color-brand-600)" }}
@@ -502,7 +497,6 @@ const LandingPage = () => {
           </div>
         </section>
       </main>
-
       <footer
         className="py-4 mt-auto"
         style={{

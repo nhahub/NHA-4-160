@@ -65,6 +65,8 @@ body {
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 80px;
+    scrollbar-color: var(--color-grey-300) var(--color-grey-50);
+    scrollbar-width: thin;
   }
   body {
     font-family: "Poppins", sans-serif;
@@ -79,23 +81,25 @@ body {
     filter: grayscale(var(--image-grayscale)) opacity(var(--image-opacity));
   }
 }
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+::-webkit-scrollbar-track {
+  background: var(--color-grey-50);
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background: var(--color-grey-300);
   border-radius: 10px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background: var(--color-grey-400);
 }
+
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }

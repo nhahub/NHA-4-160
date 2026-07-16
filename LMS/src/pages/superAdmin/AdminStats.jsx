@@ -1,4 +1,5 @@
 import { FaBuilding, FaUsers, FaBookOpen } from "react-icons/fa";
+import { Placeholder } from "react-bootstrap";
 import { useSystemStats } from "../../hooks/useSuperAdmin";
 import {
   AreaChart,
@@ -55,10 +56,160 @@ const StatCard = ({ icon, label, value }) => (
 const AdminStats = () => {
   const { data, isLoading } = useSystemStats();
 
-  if (isLoading)
+  if (isLoading) {
     return (
-      <div style={{ color: "var(--color-grey-700)" }}>Loading stats...</div>
+      <div>
+        <div className="mb-4">
+          <Placeholder as="h2" animation="glow" className="mb-1 w-25">
+            <Placeholder
+              xs={12}
+              className="rounded-3"
+              style={{
+                height: "32px",
+                backgroundColor: "var(--color-grey-300)",
+              }}
+            />
+          </Placeholder>
+          <Placeholder as="p" animation="glow" className="w-50">
+            <Placeholder
+              xs={12}
+              className="rounded-3"
+              style={{ backgroundColor: "var(--color-grey-200)" }}
+            />
+          </Placeholder>
+        </div>
+
+        <div className="row g-3 mb-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="col-12 col-md-4">
+              <Placeholder
+                as="div"
+                animation="glow"
+                className="p-4 rounded-3 h-100 d-flex align-items-center gap-3"
+                style={{
+                  backgroundColor: "var(--color-grey-0)",
+                  border: "1px solid var(--color-grey-200)",
+                }}
+              >
+                <Placeholder
+                  style={{
+                    width: "52px",
+                    height: "52px",
+                    borderRadius: "8px",
+                    backgroundColor: "var(--color-grey-200)",
+                  }}
+                />
+                <div className="flex-grow-1">
+                  <Placeholder
+                    xs={6}
+                    className="mb-2 d-block rounded-2"
+                    style={{ backgroundColor: "var(--color-grey-200)" }}
+                  />
+                  <Placeholder
+                    xs={4}
+                    className="d-block rounded-2"
+                    style={{
+                      height: "24px",
+                      backgroundColor: "var(--color-grey-300)",
+                    }}
+                  />
+                </div>
+              </Placeholder>
+            </div>
+          ))}
+        </div>
+
+        <div className="row g-3 mb-4">
+          <div className="col-12 col-lg-8">
+            <Placeholder
+              as="div"
+              animation="glow"
+              className="p-4 rounded-3 h-100"
+              style={{
+                backgroundColor: "var(--color-grey-0)",
+                border: "1px solid var(--color-grey-200)",
+              }}
+            >
+              <Placeholder
+                xs={3}
+                className="mb-4 d-block rounded-2"
+                style={{
+                  height: "24px",
+                  backgroundColor: "var(--color-grey-300)",
+                }}
+              />
+              <Placeholder
+                className="w-100 rounded-3"
+                style={{
+                  height: "300px",
+                  backgroundColor: "var(--color-grey-100)",
+                }}
+              />
+            </Placeholder>
+          </div>
+          <div className="col-12 col-lg-4">
+            <Placeholder
+              as="div"
+              animation="glow"
+              className="p-4 rounded-3 h-100"
+              style={{
+                backgroundColor: "var(--color-grey-0)",
+                border: "1px solid var(--color-grey-200)",
+              }}
+            >
+              <Placeholder
+                xs={5}
+                className="mb-4 d-block rounded-2"
+                style={{
+                  height: "24px",
+                  backgroundColor: "var(--color-grey-300)",
+                }}
+              />
+              <Placeholder
+                className="rounded-circle mx-auto d-block"
+                style={{
+                  height: "200px",
+                  width: "200px",
+                  backgroundColor: "var(--color-grey-100)",
+                  marginTop: "30px",
+                }}
+              />
+            </Placeholder>
+          </div>
+        </div>
+
+        <div className="row g-3">
+          <div className="col-12">
+            <Placeholder
+              as="div"
+              animation="glow"
+              className="p-4 rounded-3 h-100"
+              style={{
+                backgroundColor: "var(--color-grey-0)",
+                border: "1px solid var(--color-grey-200)",
+              }}
+            >
+              <Placeholder
+                xs={3}
+                className="mb-4 d-block rounded-2"
+                style={{
+                  height: "24px",
+                  backgroundColor: "var(--color-grey-300)",
+                }}
+              />
+              <Placeholder
+                className="w-100 rounded-3"
+                style={{
+                  height: "300px",
+                  backgroundColor: "var(--color-grey-100)",
+                }}
+              />
+            </Placeholder>
+          </div>
+        </div>
+      </div>
     );
+  }
 
   return (
     <div>

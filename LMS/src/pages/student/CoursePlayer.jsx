@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
+import { Placeholder } from "react-bootstrap";
 import { FaPlayCircle, FaArrowLeft } from "react-icons/fa";
 import { useCoursePlayer, useToggleLesson } from "../../hooks/useCoursePlayer";
 
@@ -57,18 +58,138 @@ const CoursePlayer = () => {
     });
   };
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <div
-        className="vh-100 d-flex justify-content-center align-items-center"
-        style={{
-          color: "var(--color-grey-900)",
-          backgroundColor: "var(--color-grey-50)",
-        }}
+        className="container-fluid p-0"
+        style={{ backgroundColor: "var(--color-grey-50)", minHeight: "100vh" }}
       >
-        Loading Player...
+        <div
+          className="p-3 shadow-sm d-flex justify-content-between align-items-center border-bottom"
+          style={{
+            backgroundColor: "var(--color-grey-0)",
+            borderColor: "var(--color-grey-200)",
+          }}
+        >
+          <Placeholder animation="glow" className="w-25">
+            <Placeholder
+              xs={4}
+              className="rounded"
+              style={{
+                height: "24px",
+                backgroundColor: "var(--color-grey-200)",
+              }}
+            />
+          </Placeholder>
+          <Placeholder animation="glow" className="w-25 text-end">
+            <Placeholder
+              xs={4}
+              className="rounded"
+              style={{
+                height: "24px",
+                backgroundColor: "var(--color-grey-200)",
+              }}
+            />
+          </Placeholder>
+        </div>
+        <div className="row g-0">
+          <div
+            className="col-lg-8 col-xl-9 border-end"
+            style={{ borderColor: "var(--color-grey-200) !important" }}
+          >
+            <Placeholder animation="glow">
+              <Placeholder
+                className="w-100"
+                style={{
+                  aspectRatio: "16/9",
+                  backgroundColor: "var(--color-grey-200)",
+                }}
+              />
+            </Placeholder>
+            <div
+              className="p-4 p-md-5"
+              style={{ backgroundColor: "var(--color-grey-0)" }}
+            >
+              <Placeholder as="h2" animation="glow" className="mb-2">
+                <Placeholder
+                  xs={6}
+                  style={{
+                    height: "32px",
+                    backgroundColor: "var(--color-grey-300)",
+                  }}
+                />
+              </Placeholder>
+              <Placeholder as="p" animation="glow" className="mb-4">
+                <Placeholder
+                  xs={3}
+                  style={{ backgroundColor: "var(--color-grey-200)" }}
+                />
+              </Placeholder>
+              <Placeholder
+                as="h5"
+                animation="glow"
+                className="border-bottom pb-2 mb-3"
+              >
+                <Placeholder
+                  xs={4}
+                  style={{
+                    height: "24px",
+                    backgroundColor: "var(--color-grey-300)",
+                  }}
+                />
+              </Placeholder>
+              <Placeholder as="p" animation="glow">
+                <Placeholder
+                  xs={12}
+                  style={{ backgroundColor: "var(--color-grey-200)" }}
+                />
+                <Placeholder
+                  xs={10}
+                  style={{ backgroundColor: "var(--color-grey-200)" }}
+                />
+                <Placeholder
+                  xs={8}
+                  style={{ backgroundColor: "var(--color-grey-200)" }}
+                />
+              </Placeholder>
+            </div>
+          </div>
+          <div
+            className="col-lg-4 col-xl-3"
+            style={{
+              height: "calc(100vh - 65px)",
+              backgroundColor: "var(--color-grey-0)",
+            }}
+          >
+            <div className="p-3 border-bottom">
+              <Placeholder animation="glow">
+                <Placeholder
+                  xs={6}
+                  style={{
+                    height: "24px",
+                    backgroundColor: "var(--color-grey-300)",
+                  }}
+                />
+              </Placeholder>
+            </div>
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="p-3 border-bottom">
+                <Placeholder animation="glow">
+                  <Placeholder
+                    xs={8}
+                    style={{
+                      height: "20px",
+                      backgroundColor: "var(--color-grey-200)",
+                    }}
+                  />
+                </Placeholder>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
+  }
 
   return (
     <div

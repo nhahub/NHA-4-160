@@ -1,12 +1,24 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { FaPlus, FaBook, FaPen, FaTrash, FaLayerGroup } from "react-icons/fa";
+import { Placeholder } from "react-bootstrap";
+import {
+  FaPlus,
+  FaBook,
+  FaPen,
+  FaTrash,
+  FaLayerGroup,
+  FaTimes,
+} from "react-icons/fa";
 import { useTeacherProfile } from "../../hooks/useTeacherProfile";
 import { useTenantCourses } from "../../hooks/useTenantCourses";
 import { useCreateCourse } from "../../hooks/useCreateCourse";
 import { useUpdateCourse } from "../../hooks/useUpdateCourse";
 import { useDeleteCourse } from "../../hooks/useDeleteCourse";
+import {
+  useTenantCategories,
+  useCreateCategory,
+} from "../../hooks/useCategories";
 import { uploadCourseImage } from "../../services/storageApi";
 import Modal from "../../components/Modal";
 import toast from "react-hot-toast";
@@ -32,6 +44,12 @@ const CourseFormModal = ({ isOpen, onClose, tenantId, course }) => {
   const isLoading = isCreating || isEditingLoading;
 
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+
+  const { data: categoriesList } = useTenantCategories(tenantId);
+  const { mutate: addCategory, isPending: isAddingCat } =
+    useCreateCategory(tenantId);
 
   const {
     register,
@@ -46,6 +64,7 @@ const CourseFormModal = ({ isOpen, onClose, tenantId, course }) => {
       description: course?.description ?? "",
       price: course?.price ?? "",
       status: course?.status ?? "draft",
+      category: course?.category ?? "",
       thumbnail_url: course?.thumbnail_url ?? "",
     },
   });
@@ -67,12 +86,25 @@ const CourseFormModal = ({ isOpen, onClose, tenantId, course }) => {
     }
   };
 
+  const handleAddCategory = () => {
+    const catName = newCategoryName.trim();
+    if (!catName) return;
+    addCategory(catName, {
+      onSuccess: () => {
+        setValue("category", catName);
+        setIsAddingCategory(false);
+        setNewCategoryName("");
+      },
+    });
+  };
+
   const onSubmit = (data) => {
     const payload = {
       title: data.title,
       description: data.description,
       price: Number(data.price),
       status: data.status,
+      category: data.category,
       thumbnail_url: data.thumbnail_url,
     };
 
@@ -142,6 +174,88 @@ const CourseFormModal = ({ isOpen, onClose, tenantId, course }) => {
             placeholder="What will students learn?"
             {...register("description")}
           />
+        </div>
+
+        <div>
+          <label
+            className="form-label fw-semibold"
+            style={{ color: "var(--color-grey-700)" }}
+          >
+            Category
+          </label>
+          {isAddingCategory ? (
+            <div className="d-flex gap-2">
+              <input
+                type="text"
+                className="form-control"
+                style={inputStyle}
+                placeholder="e.g. Programming"
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+                autoFocus
+              />
+              <button
+                type="button"
+                className="btn fw-bold px-3"
+                style={{
+                  backgroundColor: "var(--color-brand-600)",
+                  color: "var(--color-blue-text)",
+                }}
+                onClick={handleAddCategory}
+                disabled={isAddingCat}
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary d-flex align-items-center justify-content-center"
+                style={{ width: "46px" }}
+                onClick={() => setIsAddingCategory(false)}
+                disabled={isAddingCat}
+              >
+                <FaTimes />
+              </button>
+            </div>
+          ) : (
+            <div className="d-flex flex-column gap-1">
+              <div className="d-flex gap-2">
+                <select
+                  className="form-select"
+                  style={inputStyle}
+                  {...register("category", {
+                    required: "Category is required",
+                  })}
+                >
+                  <option value="" disabled>
+                    Select a category
+                  </option>
+                  {categoriesList?.map((cat) => (
+                    <option key={cat.id} value={cat.name}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  className="btn fw-bold d-flex align-items-center justify-content-center"
+                  style={{
+                    backgroundColor: "var(--color-grey-200)",
+                    color: "var(--color-grey-700)",
+                    width: "46px",
+                    flexShrink: 0,
+                  }}
+                  onClick={() => setIsAddingCategory(true)}
+                >
+                  <FaPlus />
+                </button>
+              </div>
+              {errors.category && (
+                <span className="text-danger small">
+                  {errors.category.message}
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         <div>
@@ -306,7 +420,111 @@ const Courses = () => {
 
   if (isLoading) {
     return (
-      <div style={{ color: "var(--color-grey-700)" }}>Loading courses...</div>
+      <div>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <Placeholder as="h2" animation="glow" className="mb-1">
+              <Placeholder
+                xs={6}
+                style={{
+                  height: "32px",
+                  backgroundColor: "var(--color-grey-300)",
+                  borderRadius: "8px",
+                }}
+              />
+            </Placeholder>
+            <Placeholder as="p" animation="glow" className="m-0">
+              <Placeholder
+                xs={4}
+                style={{
+                  height: "16px",
+                  backgroundColor: "var(--color-grey-200)",
+                  borderRadius: "4px",
+                }}
+              />
+            </Placeholder>
+          </div>
+          <Placeholder.Button
+            xs={2}
+            className="border-0"
+            style={{
+              height: "44px",
+              backgroundColor: "var(--color-brand-600)",
+              borderRadius: "8px",
+            }}
+          />
+        </div>
+
+        <div className="row g-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="col-12 col-md-6 col-lg-4">
+              <Placeholder
+                as="div"
+                animation="glow"
+                className="card h-100 border-0 shadow-sm"
+                style={{
+                  backgroundColor: "var(--color-grey-0)",
+                  borderRadius: "12px",
+                  overflow: "hidden",
+                }}
+              >
+                <Placeholder
+                  className="w-100"
+                  style={{
+                    height: "140px",
+                    backgroundColor: "var(--color-grey-100)",
+                  }}
+                />
+                <div className="p-3 d-flex flex-column flex-grow-1">
+                  <div className="d-flex justify-content-between mb-3">
+                    <Placeholder
+                      xs={5}
+                      style={{ backgroundColor: "var(--color-grey-300)" }}
+                    />
+                    <Placeholder
+                      xs={3}
+                      className="rounded-pill"
+                      style={{ backgroundColor: "var(--color-grey-200)" }}
+                    />
+                  </div>
+                  <Placeholder
+                    xs={10}
+                    className="mb-1"
+                    style={{ backgroundColor: "var(--color-grey-200)" }}
+                  />
+                  <Placeholder
+                    xs={8}
+                    className="mb-3"
+                    style={{ backgroundColor: "var(--color-grey-200)" }}
+                  />
+                  <Placeholder
+                    xs={3}
+                    className="mb-3"
+                    style={{ backgroundColor: "var(--color-grey-300)" }}
+                  />
+                  <div className="d-flex gap-2 mt-auto">
+                    <Placeholder.Button
+                      xs={8}
+                      className="border-0"
+                      style={{ backgroundColor: "var(--color-brand-600)" }}
+                    />
+                    <Placeholder.Button
+                      xs={2}
+                      className="border-0"
+                      style={{ backgroundColor: "var(--color-grey-200)" }}
+                    />
+                    <Placeholder.Button
+                      xs={2}
+                      className="border-0"
+                      style={{ backgroundColor: "var(--color-grey-200)" }}
+                    />
+                  </div>
+                </div>
+              </Placeholder>
+            </div>
+          ))}
+        </div>
+      </div>
     );
   }
 
@@ -360,7 +578,7 @@ const Courses = () => {
         </div>
       ) : (
         <div className="row g-3">
-          {courses.map((course) => (
+          {courses?.map((course) => (
             <div key={course.id} className="col-12 col-md-6 col-lg-4">
               <div
                 className="rounded-3 h-100 d-flex flex-column overflow-hidden"
@@ -377,10 +595,22 @@ const Courses = () => {
                     backgroundColor: "var(--color-grey-100)",
                   }}
                 >
-                  <FaBook
-                    size={28}
-                    style={{ color: "var(--color-grey-400)" }}
-                  />
+                  {course.thumbnail_url ? (
+                    <img
+                      src={course.thumbnail_url}
+                      alt={course.title}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <FaBook
+                      size={28}
+                      style={{ color: "var(--color-grey-400)" }}
+                    />
+                  )}
                 </div>
 
                 <div className="p-3 d-flex flex-column flex-grow-1">

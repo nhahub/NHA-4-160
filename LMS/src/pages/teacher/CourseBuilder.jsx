@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { Placeholder } from "react-bootstrap";
 import {
   FaArrowLeft,
   FaPlus,
@@ -36,7 +37,6 @@ const cardStyle = {
   boxShadow: "var(--shadow-sm)",
 };
 
-/** Small reusable up/down pair used for both sections and lessons. */
 const ReorderButtons = ({ onUp, onDown, disableUp, disableDown }) => (
   <div className="d-flex flex-column">
     <button
@@ -66,7 +66,6 @@ const ReorderButtons = ({ onUp, onDown, disableUp, disableDown }) => (
   </div>
 );
 
-/** Modal used both to add a brand-new lesson and to edit an existing one. */
 const LessonFormModal = ({
   isOpen,
   onClose,
@@ -212,7 +211,7 @@ const LessonFormModal = ({
 
           {currentVideoUrl && !isUploadingVideo && (
             <div className="alert alert-success p-2 small m-0 mt-2 fw-semibold">
-              ✅ Video uploaded successfully!
+              Video uploaded successfully!
             </div>
           )}
 
@@ -241,7 +240,7 @@ const LessonFormModal = ({
     </Modal>
   );
 };
-/** One lesson row inside a section, with edit/delete/reorder controls. */
+
 const LessonRow = ({
   lesson,
   index,
@@ -317,7 +316,6 @@ const LessonRow = ({
   );
 };
 
-/** One section card: title (inline-editable), its lessons, and reorder controls. */
 const SectionCard = ({ section, index, total, courseId, allSections }) => {
   const { editSection } = useUpdateSection(courseId);
   const { removeSection } = useDeleteSection(courseId);
@@ -500,8 +498,185 @@ const CourseBuilder = () => {
 
   if (isLoading) {
     return (
-      <div style={{ color: "var(--color-grey-700)" }}>
-        Loading curriculum...
+      <div>
+        <Placeholder as="div" animation="glow" className="mb-3">
+          <Placeholder
+            xs={2}
+            className="rounded-2"
+            style={{ backgroundColor: "var(--color-grey-200)", height: "20px" }}
+          />
+        </Placeholder>
+
+        <div className="mb-4">
+          <Placeholder as="h2" animation="glow" className="mb-1">
+            <Placeholder
+              xs={5}
+              md={3}
+              className="rounded-3"
+              style={{
+                backgroundColor: "var(--color-grey-300)",
+                height: "32px",
+              }}
+            />
+          </Placeholder>
+          <Placeholder as="p" animation="glow" className="m-0">
+            <Placeholder
+              xs={8}
+              md={5}
+              className="rounded-2"
+              style={{
+                backgroundColor: "var(--color-grey-200)",
+                height: "20px",
+              }}
+            />
+          </Placeholder>
+        </div>
+
+        {[1, 2].map((i) => (
+          <div
+            key={i}
+            className="rounded-3 mb-3 p-0"
+            style={{
+              backgroundColor: "var(--color-grey-0)",
+              border: "1px solid var(--color-grey-200)",
+            }}
+          >
+            <div
+              className="d-flex align-items-center gap-3 p-3"
+              style={{ borderBottom: "1px solid var(--color-grey-100)" }}
+            >
+              <Placeholder
+                animation="glow"
+                className="w-100 d-flex align-items-center gap-3"
+              >
+                <Placeholder
+                  xs={1}
+                  className="rounded-2"
+                  style={{
+                    backgroundColor: "var(--color-grey-200)",
+                    width: "20px",
+                    height: "20px",
+                  }}
+                />
+                <Placeholder
+                  xs={1}
+                  className="rounded-2"
+                  style={{
+                    backgroundColor: "var(--color-grey-200)",
+                    width: "20px",
+                    height: "20px",
+                  }}
+                />
+                <Placeholder
+                  xs={4}
+                  className="rounded-2 flex-grow-1"
+                  style={{
+                    backgroundColor: "var(--color-grey-300)",
+                    height: "24px",
+                  }}
+                />
+                <Placeholder
+                  xs={1}
+                  className="rounded-2"
+                  style={{
+                    backgroundColor: "var(--color-grey-200)",
+                    width: "24px",
+                    height: "24px",
+                  }}
+                />
+                <Placeholder
+                  xs={1}
+                  className="rounded-2"
+                  style={{
+                    backgroundColor: "var(--color-grey-200)",
+                    width: "24px",
+                    height: "24px",
+                  }}
+                />
+              </Placeholder>
+            </div>
+            <div className="p-2">
+              {[1, 2].map((j) => (
+                <div
+                  key={j}
+                  className="d-flex align-items-center gap-3 p-2 rounded-3"
+                  style={{ borderBottom: "1px solid var(--color-grey-100)" }}
+                >
+                  <Placeholder
+                    animation="glow"
+                    className="w-100 d-flex align-items-center gap-3"
+                  >
+                    <Placeholder
+                      xs={1}
+                      className="rounded-2"
+                      style={{
+                        backgroundColor: "var(--color-grey-200)",
+                        width: "20px",
+                        height: "20px",
+                      }}
+                    />
+                    <Placeholder
+                      xs={1}
+                      className="rounded-2"
+                      style={{
+                        backgroundColor: "var(--color-grey-200)",
+                        width: "20px",
+                        height: "20px",
+                      }}
+                    />
+                    <div className="flex-grow-1">
+                      <Placeholder
+                        xs={5}
+                        className="rounded-2 mb-1 d-block"
+                        style={{ backgroundColor: "var(--color-grey-300)" }}
+                      />
+                      <Placeholder
+                        xs={3}
+                        className="rounded-2 d-block"
+                        style={{ backgroundColor: "var(--color-grey-200)" }}
+                      />
+                    </div>
+                  </Placeholder>
+                </div>
+              ))}
+              <Placeholder animation="glow" className="mt-2">
+                <Placeholder
+                  xs={2}
+                  className="rounded-2"
+                  style={{
+                    backgroundColor: "var(--color-grey-200)",
+                    height: "28px",
+                  }}
+                />
+              </Placeholder>
+            </div>
+          </div>
+        ))}
+        <div
+          className="rounded-3 p-3 d-flex gap-2"
+          style={{
+            backgroundColor: "var(--color-grey-0)",
+            border: "1px solid var(--color-grey-200)",
+          }}
+        >
+          <Placeholder animation="glow" className="w-100 d-flex gap-2">
+            <Placeholder
+              className="rounded-2 flex-grow-1"
+              style={{
+                backgroundColor: "var(--color-grey-100)",
+                height: "40px",
+              }}
+            />
+            <Placeholder
+              className="rounded-2"
+              style={{
+                backgroundColor: "var(--color-grey-200)",
+                width: "120px",
+                height: "40px",
+              }}
+            />
+          </Placeholder>
+        </div>
       </div>
     );
   }

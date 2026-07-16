@@ -1,52 +1,152 @@
 import { useParams, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getCourseCurriculum } from "../../services/courseService";
+import { Placeholder } from "react-bootstrap";
 import { FaLock, FaPlayCircle, FaUnlock, FaShoppingCart } from "react-icons/fa";
-import { supabase } from "../../config/supabase";
+import { useCourseDetails } from "../../hooks/useCourseDetails";
 
 const CourseDetails = () => {
   const { tenantId, courseId } = useParams();
+  const { course, isEnrolled, isStudentLoggedIn, isLoading } =
+    useCourseDetails(courseId);
 
-  const { data: course, isLoading: isCourseLoading } = useQuery({
-    queryKey: ["courseDetails", courseId],
-    queryFn: () => getCourseCurriculum(courseId),
-  });
-
-  const { data: currentUser, isLoading: isUserLoading } = useQuery({
-    queryKey: ["studentUser"],
-    queryFn: async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      return user;
-    },
-  });
-
-  const { data: isEnrolled, isLoading: isEnrollmentLoading } = useQuery({
-    queryKey: ["checkEnrollment", courseId, currentUser?.id],
-    queryFn: async () => {
-      if (!currentUser) return false;
-      const { data, error } = await supabase
-        .from("enrollments")
-        .select("id")
-        .eq("student_id", currentUser.id)
-        .eq("course_id", courseId)
-        .maybeSingle();
-
-      if (error) throw error;
-      return !!data;
-    },
-    enabled: !!currentUser,
-  });
-
-  const isStudentLoggedIn = !!currentUser;
-
-  if (isCourseLoading || isUserLoading || isEnrollmentLoading)
+  if (isLoading) {
     return (
-      <div className="py-5 text-center fw-bold text-muted">
-        Loading course details...
+      <div className="row g-5">
+        <div className="col-lg-8">
+          <Placeholder as="h1" animation="glow" className="mb-3">
+            <Placeholder
+              xs={8}
+              className="rounded-3"
+              style={{
+                height: "40px",
+                backgroundColor: "var(--color-grey-300)",
+              }}
+            />
+          </Placeholder>
+          <Placeholder as="p" animation="glow" className="fs-5 mb-4">
+            <Placeholder
+              xs={12}
+              className="rounded-2 mb-2"
+              style={{ backgroundColor: "var(--color-grey-200)" }}
+            />
+            <Placeholder
+              xs={12}
+              className="rounded-2 mb-2"
+              style={{ backgroundColor: "var(--color-grey-200)" }}
+            />
+            <Placeholder
+              xs={6}
+              className="rounded-2"
+              style={{ backgroundColor: "var(--color-grey-200)" }}
+            />
+          </Placeholder>
+
+          <Placeholder as="h3" animation="glow" className="mb-4">
+            <Placeholder
+              xs={4}
+              className="rounded-3"
+              style={{
+                height: "32px",
+                backgroundColor: "var(--color-grey-300)",
+              }}
+            />
+          </Placeholder>
+
+          {[1, 2].map((i) => (
+            <div
+              key={i}
+              className="card mb-3 border-0 shadow-sm"
+              style={{ backgroundColor: "var(--color-grey-0)" }}
+            >
+              <div
+                className="card-header border-0 py-3"
+                style={{ backgroundColor: "var(--color-grey-50)" }}
+              >
+                <Placeholder animation="glow">
+                  <Placeholder
+                    xs={5}
+                    className="rounded-2"
+                    style={{
+                      height: "24px",
+                      backgroundColor: "var(--color-grey-300)",
+                    }}
+                  />
+                </Placeholder>
+              </div>
+              <ul className="list-group list-group-flush">
+                {[1, 2, 3].map((j) => (
+                  <li
+                    key={j}
+                    className="list-group-item py-3"
+                    style={{ backgroundColor: "var(--color-grey-0)" }}
+                  >
+                    <Placeholder
+                      animation="glow"
+                      className="w-100 d-flex justify-content-between align-items-center"
+                    >
+                      <Placeholder
+                        xs={7}
+                        className="rounded-2"
+                        style={{ backgroundColor: "var(--color-grey-200)" }}
+                      />
+                      <Placeholder
+                        xs={2}
+                        className="rounded-pill"
+                        style={{ backgroundColor: "var(--color-grey-200)" }}
+                      />
+                    </Placeholder>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="col-lg-4">
+          <div
+            className="card shadow-sm border-0 sticky-top"
+            style={{ top: "100px", backgroundColor: "var(--color-grey-0)" }}
+          >
+            <Placeholder animation="glow">
+              <Placeholder
+                className="w-100 card-img-top"
+                style={{
+                  height: "200px",
+                  backgroundColor: "var(--color-grey-200)",
+                }}
+              />
+            </Placeholder>
+            <div className="card-body p-4 text-center">
+              <Placeholder as="h2" animation="glow" className="mb-3">
+                <Placeholder
+                  xs={5}
+                  className="rounded-3"
+                  style={{
+                    height: "36px",
+                    backgroundColor: "var(--color-grey-300)",
+                  }}
+                />
+              </Placeholder>
+              <Placeholder animation="glow">
+                <Placeholder.Button
+                  className="w-100 py-2 mb-2 border-0"
+                  style={{
+                    borderRadius: "8px",
+                    backgroundColor: "var(--color-grey-200)",
+                    cursor: "default",
+                  }}
+                />
+                <Placeholder
+                  xs={8}
+                  className="rounded-2 mt-2"
+                  style={{ backgroundColor: "var(--color-grey-100)" }}
+                />
+              </Placeholder>
+            </div>
+          </div>
+        </div>
       </div>
     );
+  }
 
   return (
     <div className="row g-5">
@@ -95,7 +195,6 @@ const CourseDetails = () => {
                         <FaPlayCircle size={16} />
                         <span>{lesson.title}</span>
                       </div>
-
                       {isEnrolled ? (
                         <span
                           className="badge"

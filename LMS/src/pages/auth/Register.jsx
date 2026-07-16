@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   FaEye,
   FaEyeSlash,
@@ -8,47 +8,26 @@ import {
   FaSun,
   FaMoon,
 } from "react-icons/fa";
-import { useQuery } from "@tanstack/react-query";
-import { getPlans } from "../../services/planService";
-import { registerTeacher } from "../../services/authService";
+import { Placeholder, Spinner } from "react-bootstrap";
+import { useRegister } from "../../hooks/useRegister";
 import { useTheme } from "../../hooks/useTheme";
-import toast from "react-hot-toast";
+import { useGetPlans } from "../../hooks/useGetPlans";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const { theme, toggleTheme } = useTheme();
-  const navigate = useNavigate();
+  const { mutate: registerTeacher, isPending } = useRegister();
 
   const {
     register,
     handleSubmit,
-    setValue,
     watch,
     formState: { errors },
   } = useForm();
 
   const selectedPlan = watch("planId");
 
-  const { data: plans, isLoading: isPlansLoading } = useQuery({
-    queryKey: ["plans"],
-    queryFn: getPlans,
-  });
-
-  const onSubmit = async (data) => {
-    setIsLoading(true);
-    try {
-      console.log("Submitting form data:", data);
-      await registerTeacher(data);
-      toast.success("Academy created successfully!");
-      navigate("/dashboard");
-    } catch (err) {
-      console.error("FULL ERROR OBJECT:", err);
-      toast.error(err.message || "Registration failed. Check console.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { data: plans, isPending: isPlansLoading } = useGetPlans();
 
   const inputStyle = {
     backgroundColor: "var(--color-grey-50)",
@@ -85,7 +64,7 @@ const Register = () => {
       </div>
 
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit((data) => registerTeacher(data))}
         className="d-flex flex-column gap-3"
       >
         {/* Plans Section */}
@@ -98,193 +77,187 @@ const Register = () => {
           </label>
 
           {isPlansLoading ? (
-            <p>Loading plans...</p>
-          ) : (
-            plans?.map((plan) => {
-              const isSelected = String(selectedPlan) === String(plan.id);
-
-              return (
-                <label
-                  key={plan.id}
-                  htmlFor={`plan-${plan.id}`}
-                  className="position-relative d-block rounded-3 p-3 mb-3 border transition"
-                  style={{
-                    cursor: "pointer",
-                    border: isSelected
-                      ? "2px solid var(--color-brand-600) !important"
-                      : "1px solid var(--color-grey-300)",
-                    backgroundColor: isSelected
-                      ? "var(--color-brand-50)"
-                      : "var(--color-grey-0)",
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  <input
-                    id={`plan-${plan.id}`}
-                    type="radio"
-                    value={plan.id}
-                    {...register("planId", { required: true })}
-                    className="d-none"
+            <div>
+              {[1, 2].map((i) => (
+                <Placeholder key={i} as="div" animation="glow" className="mb-3">
+                  <Placeholder
+                    className="rounded-3 w-100"
+                    style={{
+                      height: "100px",
+                      backgroundColor: "var(--color-grey-200)",
+                    }}
                   />
+                </Placeholder>
+              ))}
+            </div>
+          ) : (
+            <div>
+              {plans?.map((plan) => {
+                const isSelected = String(selectedPlan) === String(plan.id);
 
-                  {isSelected && (
-                    <div
-                      className="position-absolute"
-                      style={{
-                        top: "50%",
-                        right: "15px",
-                        transform: "translateY(-50%)",
-                      }}
-                    >
-                      <FaCheckCircle color="var(--color-brand-600)" size={20} />
-                    </div>
-                  )}
-
-                  <div className="d-flex justify-content-between align-items-center">
-                    <span
-                      className="fw-bold fs-5"
-                      style={{ color: "var(--color-grey-900)" }}
-                    >
-                      {plan.name}
-                    </span>
-                    <span
-                      className="fw-bold fs-5"
-                      style={{ color: "var(--color-brand-600)" }}
-                    >
-                      {plan.price} EGP
-                    </span>
-                  </div>
-
-                  <div
-                    className="mt-2 small"
-                    style={{ color: "var(--color-grey-600)" }}
+                return (
+                  <label
+                    key={plan.id}
+                    htmlFor={`plan-${plan.id}`}
+                    className="position-relative d-block rounded-3 p-3 mb-3 border transition"
+                    style={{
+                      cursor: "pointer",
+                      border: isSelected
+                        ? "2px solid var(--color-brand-600) !important"
+                        : "1px solid var(--color-grey-300)",
+                      backgroundColor: isSelected
+                        ? "var(--color-brand-50)"
+                        : "var(--color-grey-0)",
+                      transition: "all 0.2s ease",
+                    }}
                   >
-                    {plan.features?.map((f, i) => (
+                    <input
+                      id={`plan-${plan.id}`}
+                      type="radio"
+                      value={plan.id}
+                      {...register("planId", { required: true })}
+                      className="d-none"
+                    />
+
+                    {isSelected && (
                       <div
-                        key={i}
-                        className="d-flex align-items-center gap-2 mb-1"
+                        className="position-absolute"
+                        style={{
+                          top: "50%",
+                          right: "15px",
+                          transform: "translateY(-50%)",
+                        }}
                       >
                         <FaCheckCircle
-                          size={12}
-                          style={{ color: "var(--color-brand-500)" }}
+                          color="var(--color-brand-600)"
+                          size={20}
                         />
-                        {f}
                       </div>
-                    ))}
-                  </div>
-                </label>
-              );
-            })
-          )}
-          {errors.planId && (
-            <span className="text-danger small">Please select a plan</span>
+                    )}
+
+                    <div className="d-flex justify-content-between align-items-center">
+                      <span
+                        className="fw-bold fs-5"
+                        style={{ color: "var(--color-grey-900)" }}
+                      >
+                        {plan.name}
+                      </span>
+                      <span
+                        className="fw-bold fs-5"
+                        style={{ color: "var(--color-brand-600)" }}
+                      >
+                        {plan.price} EGP
+                      </span>
+                    </div>
+
+                    <div
+                      className="mt-2 small"
+                      style={{ color: "var(--color-grey-600)" }}
+                    >
+                      {plan.features?.map((f, i) => (
+                        <div
+                          key={i}
+                          className="d-flex align-items-center gap-2 mb-1"
+                        >
+                          <FaCheckCircle
+                            size={12}
+                            style={{ color: "var(--color-brand-500)" }}
+                          />
+                          {f}
+                        </div>
+                      ))}
+                    </div>
+                  </label>
+                );
+              })}
+              {errors.planId && (
+                <span className="text-danger small">Please select a plan</span>
+              )}
+            </div>
           )}
         </div>
+
         {/* Inputs */}
         <div className="d-flex flex-column gap-3">
-          <div>
-            <label
-              className="form-label fw-semibold"
-              style={{ color: "var(--color-grey-700)" }}
-            >
-              Full Name
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              style={inputStyle}
-              {...register("name", { required: true })}
-              placeholder="Abdullah Sawan"
-            />
-          </div>
+          <input
+            type="text"
+            className="form-control"
+            style={inputStyle}
+            placeholder="Full Name"
+            {...register("name", { required: true })}
+          />
           <div className="row g-2">
             <div className="col-6">
-              <label
-                className="form-label fw-semibold"
-                style={{ color: "var(--color-grey-700)" }}
-              >
-                Email
-              </label>
               <input
                 type="email"
                 className="form-control"
                 style={inputStyle}
+                placeholder="Email"
                 {...register("email", { required: true })}
-                placeholder="mail@example.com"
               />
             </div>
             <div className="col-6">
-              <label
-                className="form-label fw-semibold"
-                style={{ color: "var(--color-grey-700)" }}
-              >
-                Phone
-              </label>
               <input
                 type="text"
                 className="form-control"
                 style={inputStyle}
+                placeholder="Phone"
                 {...register("phone", { required: true })}
-                placeholder="010xxxxxxx"
               />
             </div>
           </div>
-          <div>
-            <label
-              className="form-label fw-semibold"
-              style={{ color: "var(--color-grey-700)" }}
-            >
-              Academy Name
-            </label>
+          <input
+            type="text"
+            className="form-control"
+            style={inputStyle}
+            placeholder="Academy Name"
+            {...register("academyName", { required: true })}
+          />
+
+          <div className="input-group">
             <input
-              type="text"
+              type={showPassword ? "text" : "password"}
               className="form-control"
-              style={inputStyle}
-              {...register("academyName", { required: true })}
-              placeholder="My Academy"
+              style={{ ...inputStyle, borderRight: "none" }}
+              placeholder="Password"
+              {...register("password", { required: true })}
             />
-          </div>
-          <div>
-            <label
-              className="form-label fw-semibold"
-              style={{ color: "var(--color-grey-700)" }}
+            <button
+              type="button"
+              className="input-group-text"
+              style={{ ...inputStyle, borderLeft: "none" }}
+              onClick={() => setShowPassword(!showPassword)}
             >
-              Password
-            </label>
-            <div className="input-group">
-              <input
-                type={showPassword ? "text" : "password"}
-                className="form-control"
-                style={{ ...inputStyle, borderRight: "none" }}
-                placeholder="********"
-                {...register("password", { required: true })}
-              />
-              <button
-                type="button"
-                className="input-group-text"
-                style={{ ...inputStyle, borderLeft: "none" }}
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <FaEyeSlash color="var(--color-grey-500)" />
-                ) : (
-                  <FaEye color="var(--color-grey-500)" />
-                )}
-              </button>
-            </div>
+              {showPassword ? (
+                <FaEyeSlash color="var(--color-grey-500)" />
+              ) : (
+                <FaEye color="var(--color-grey-500)" />
+              )}
+            </button>
           </div>
         </div>
 
         <button
           type="submit"
+          disabled={isPending}
           className="btn w-100 fw-bold mt-2"
           style={{
             backgroundColor: "var(--color-brand-600)",
             color: "var(--color-blue-text)",
             padding: "10px",
+            border: "none",
+            outline: "none",
+            boxShadow: "none",
           }}
         >
-          {isLoading ? "Creating..." : "Create Academy"}
+          {isPending ? (
+            <>
+              {" "}
+              <Spinner size="sm" className="me-2" /> Creating...{" "}
+            </>
+          ) : (
+            "Create Academy"
+          )}
         </button>
       </form>
 
