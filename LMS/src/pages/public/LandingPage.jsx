@@ -42,31 +42,31 @@ const LandingPage = () => {
       }}
     >
       <nav
-        className="navbar navbar-expand-lg sticky-top"
+        className="navbar sticky-top"
         style={{
           backgroundColor: "var(--color-grey-0)",
           borderBottom: "1px solid var(--color-grey-200)",
-          padding: "16px 0",
+          padding: "12px 0",
         }}
       >
-        <div className="container">
+        <div className="container d-flex flex-nowrap align-items-center justify-content-between">
           <Link
             to="/"
-            className="navbar-brand fw-bold fs-3"
+            className="navbar-brand m-0 d-flex align-items-center fw-bold fs-5 fs-md-3"
             style={{ color: "var(--color-brand-600)" }}
           >
-            <FaChalkboardTeacher className="me-2" />
+            <FaChalkboardTeacher className="me-1 me-md-2" />
             TeachBase
           </Link>
 
-          <div className="d-flex align-items-center ms-auto">
+          <div className="d-flex align-items-center gap-2 gap-sm-3">
             <button
               onClick={toggleTheme}
-              className="btn btn-link me-3 d-flex align-items-center justify-content-center"
+              className="btn border-0 p-1 d-flex align-items-center justify-content-center shadow-none"
               style={{
                 color: "var(--color-grey-700)",
-                textDecoration: "none",
                 fontSize: "1.2rem",
+                backgroundColor: "transparent",
               }}
             >
               {theme === "dark" ? <FaSun /> : <FaMoon />}
@@ -74,7 +74,7 @@ const LandingPage = () => {
 
             <Link
               to="/login"
-              className="btn fw-semibold me-2"
+              className="text-decoration-none fw-semibold"
               style={{ color: "var(--color-grey-700)" }}
             >
               Login
@@ -82,7 +82,7 @@ const LandingPage = () => {
 
             <Link
               to="/register"
-              className="btn shadow-sm px-3 px-md-4"
+              className="btn shadow-sm px-2 px-sm-3"
               style={brandButtonStyle}
             >
               <span className="d-none d-sm-inline">Start for Free</span>
@@ -90,7 +90,7 @@ const LandingPage = () => {
             </Link>
           </div>
         </div>
-      </nav>{" "}
+      </nav>
       <main className="flex-grow-1">
         <section className="container text-center py-5 mt-5">
           <div className="row justify-content-center">
